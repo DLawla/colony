@@ -1,2 +1,2 @@
-*.idea
-*.idea/
+# RubyMine files
+.idea/*
