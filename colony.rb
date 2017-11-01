@@ -1,4 +1,6 @@
 require 'gosu'
+require 'byebug'
+
 require './lib/planet'
 
 # Phases
@@ -6,6 +8,7 @@ require './lib/planet'
 # 2) Add in a debug mode to draw hitboxes
 # 3) Import planet sprites
 # 4) Import music :)
+    # Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
 # 5) Import music toggle
 # 6) Create populations (increase by planet size, so give planet's size trait)
 # 7) When selected, support moving ALL planet's population to an adjacent selected planet
@@ -14,102 +17,68 @@ require './lib/planet'
 
 class GameWindow < Gosu::Window
 
-  attr_accessor :entities, :walls, :delta
+  attr_accessor :entities, :delta
 
-  # Initialize the game
   def initialize
     super(288, 512, false)
-    caption = 'GosuFlappy Game'
-    @start = false
+    caption = 'Colony'
+
+    @elapsed_time = 0
     @delta = 0
     @last_time = 0
-    @background_image = Gosu::Image.new('media/background.png')
-    @message_image = Gosu::Image.new('media/message.png')
-    @ground = Ground.new(self)
-    @player = Player.new(self)
-    @wallfactory = WallFactory.new(self)
-    @score = 0
+
+    cursor
+    background_image
     @font = Gosu::Font.new(self, 'Courier', 40)
+
+    @planets = [Planet.new(self)]
     @entities = [
-      @ground,
-      @player
-    ]
+      @planets
+    ].flatten!
   end
 
-  # Reset all elements
-  def reset
-    @delta = 0
-    @last_time = 0
-    @player = Player.new(self)
-    @wallfactory = WallFactory.new(self)
-    @score = 0
-    @walls = []
-    @entities = [
-      @ground,
-      @player,
-      @wallfactory
-    ]
+  def needs_cursor?
+    true
   end
 
-  # Update delta param
-  def update_delta
+  # Called by Gosu
+  def update
+    update_times
+
+    @entities.each do |entity|
+      entity.update
+    end
+  end
+
+  # Called by Gosu
+  def draw
+    background_image.draw(0, 0, 0)
+    #cursor.draw self.mouse_x, self.mouse_y, 10
+
+    # draw the time
+    @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
+
+    @entities.each do |entity|
+      entity.draw
+    end
+  end
+
+  private
+
+  def update_times
     current_time = Gosu::milliseconds / 1000.0
     @delta = [current_time - @last_time, 0.25].min
     @last_time = current_time
+
+    @elapsed_time += @delta
   end
 
-  # Update game for each loop occurence - standard gosu method
-  def update
-    if @start
-      update_delta
-      if @player.dead
-        @player.update
-        @start = false if @player.killed?
-      else
-        @entities.each do |e|
-          e.update
-        end
-      end
-      @walls.each do |wall|
-        @player.dead = true if @player.collision? wall
-        @score += 0.5 if wall.score? @player
-      end
-      @walls.reject! {|wall| !wall.active }
-    else
-      if button_down?(Gosu::KbSpace)
-        @start = true
-        reset
-      end
-    end
+  def background_image
+    @background_image ||= Gosu::Image.new("media/backgrounds/background_#{rand(5) + 1}.png")
   end
 
-  # Draw entities of games - standard gosu method
-  def draw
-    @background_image.draw(0, 0, 0)
-    @message_image.draw(width/2 - @message_image.width/2, 50, 10) if !@start
-    # draw the score
-    @font.draw("#{@score.to_i}", 10, 10, 20)
-    @entities.each do |e|
-      e.draw
-    end
-  end
-
-  # Compute height of sky
-  # @return [integer] the height of sky
-  def sky_height
-    @background_image.height - self.ground_height
-  end
-
-  # Return the height of ground
-  # @return [integer]
-  def ground_height
-    @ground.height
-  end
-
-  # Return ground y position
-  # @return [integer]
-  def ground_y
-    @ground.y
+  def cursor
+    @cursor ||= Gosu::Image.new('media/cursor.png')
   end
 end
 
