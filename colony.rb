@@ -21,7 +21,7 @@ class GameWindow < Gosu::Window
 
   def initialize
     super(288, 512, false)
-    caption = 'Colony'
+    self.caption = 'Colony'
 
     # Time variables
     @elapsed_time = 0

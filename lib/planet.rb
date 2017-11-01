@@ -14,8 +14,8 @@ class Planet
 
     @selected = false
 
-    @selection_radius = 38
-    @circle = Gosu::Image.new(Circle.new(@selection_radius, 90, 90, 90))
+    @selection_radius = 34
+    @circle = Gosu::Image.new(Circle.new(@selection_radius, 255, 255, 40))
   end
 
   def draw
@@ -38,6 +38,8 @@ class Planet
   def udpate_selection
     if @window.button_down? Gosu::MsLeft
       @selected = within_planet? @window.mouse_x, @window.mouse_y
+      puts "x: #{@window.mouse_x}"
+      puts "y: #{@window.mouse_y}"
     end
   end
 
