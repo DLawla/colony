@@ -6,7 +6,7 @@ class Planet
   def initialize(window, x, y)
     @window = window
 
-    @image = Gosu::Image.new('media/planets/planet_1.png')
+    image
     @x = x
     @y = y
     @width = 60
@@ -14,12 +14,12 @@ class Planet
 
     @selected = false
 
-    @selection_radius = 40
-    @circle = Gosu::Image.new(Circle.new(@selection_radius, 80, 80, 80))
+    @selection_radius = 38
+    @circle = Gosu::Image.new(Circle.new(@selection_radius, 90, 90, 90))
   end
 
   def draw
-    @image.draw(@x, @y, 5, 0.1, 0.1)
+    image.draw(@x, @y, 5, 0.2, 0.2)
     @circle.draw(@x + (@width/2 - @selection_radius), @y + (@height/2 - @selection_radius), 0) if @selected
 
     # TODO, on hover over lighten image
