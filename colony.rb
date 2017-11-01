@@ -1,10 +1,10 @@
 require 'gosu'
 require 'byebug'
 
-require './lib/planet'
+require './lib/planet_factory'
 
 # Phases
-# 1) Two planets (drawn), rendered w/ mouse selection and image change when selected
+# 1) DONE Two planets (drawn), rendered w/ mouse selection and image change when selected
 # 2) Add in a debug mode to draw hitboxes
 # 3) Import planet sprites
 # 4) Import music :)
@@ -23,18 +23,24 @@ class GameWindow < Gosu::Window
     super(288, 512, false)
     caption = 'Colony'
 
+    # Time variables
     @elapsed_time = 0
     @delta = 0
     @last_time = 0
 
-    cursor
+    # Images and fonts
+    #cursor
     background_image
     @font = Gosu::Font.new(self, 'Courier', 40)
 
-    @planets = [Planet.new(self)]
-    @entities = [
-      @planets
-    ].flatten!
+    @entities = []
+
+    # Load entities
+    PlanetFactory.new(self)
+
+    # Add entities
+    @entities << []
+    @entities.flatten!
   end
 
   def needs_cursor?

@@ -3,30 +3,30 @@ require './lib/helpers/circle'
 class Planet
   attr_accessor :x, :y
 
-  def initialize(window)
+  def initialize(window, x, y)
     @window = window
 
     @image = Gosu::Image.new('media/planets/planet_1.png')
-    @x = 200
-    @y = 200
+    @x = x
+    @y = y
     @width = 60
     @height = 60
 
     @selected = false
 
-    @circle = Gosu::Image.new(Circle.new(50, 200, 200, 200))
+    @selection_radius = 40
+    @circle = Gosu::Image.new(Circle.new(@selection_radius, 80, 80, 80))
   end
 
   def draw
     @image.draw(@x, @y, 5, 0.1, 0.1)
+    @circle.draw(@x + (@width/2 - @selection_radius), @y + (@height/2 - @selection_radius), 0) if @selected
 
-    @circle.draw(100, 100, 0)
-
-    # on hover over, dim the opacity of the planet image
+    # TODO, on hover over lighten image
   end
 
   def update
-    planet_clicked?
+    udpate_selection
   end
 
   private
@@ -35,14 +35,9 @@ class Planet
     @image ||= Gosu::Image.new("media/planets/planet_#{rand(15) + 1}.png")
   end
 
-  def planet_clicked?
-    # Gosu::MsLeft && mouse_x
+  def udpate_selection
     if @window.button_down? Gosu::MsLeft
-      if within_planet? @window.mouse_x, @window.mouse_y
-        #
-      else
-        #
-      end
+      @selected = within_planet? @window.mouse_x, @window.mouse_y
     end
   end
 
