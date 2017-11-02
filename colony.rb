@@ -6,15 +6,21 @@ require 'byebug'
 require './lib/planet_factory'
 
 # Phases
-# 1) DONE Two planets (drawn), rendered w/ mouse selection and image change when selected
-# 2) Add in a debug mode to draw hitboxes
-# 3) Import planet sprites
-# 4) Import music :)
-    # Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
-# 5) Import music toggle
-# 6) Create populations (increase by planet size, so give planet's size trait)
-# 7) When selected, support moving ALL planet's population to an adjacent selected planet
-# 8) Battle system...
+# [DONE] Two planets (drawn), rendered w/ mouse selection and image change when selected
+# [DONE] Import planet sprites
+
+
+# [] Create random planet sizing, give planet a size trait, and adjust selection box accordingly
+# [] Create populations (increase by planet size, so hold a population and max population value) and ensure they max out out
+  # Bonus points, population growth slows approching max
+
+# [] Add in a debug mode to draw hitboxes
+# [] Import music :)
+# Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
+# [] Import music toggle
+
+# [] When selected, support moving ALL planet's population to an adjacent selected planet
+# [] Battle system...
 
 
 class GameWindow < Gosu::Window
