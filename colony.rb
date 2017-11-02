@@ -8,9 +8,8 @@ require './lib/planet_factory'
 # Phases
 # [DONE] Two planets (drawn), rendered w/ mouse selection and image change when selected
 # [DONE] Import planet sprites
+# [DONE] Create random planet sizing, give planet a size trait, and adjust selection box accordingly
 
-
-# [] Create random planet sizing, give planet a size trait, and adjust selection box accordingly
 # [] Create populations (increase by planet size, so hold a population and max population value) and ensure they max out out
   # Bonus points, population growth slows approching max
 

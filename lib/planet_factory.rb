@@ -5,6 +5,8 @@ require './lib/planet'
 class PlanetFactory
   def initialize(window)
     @window = window
-    @window.entities.push(Planet.new(@window, 100, 50), Planet.new(@window, 100, 200))
+    @window.entities.push(Planet.new(@window, x: 100, y: 50),
+                          Planet.new(@window, x: 100, y: 200),
+                          Planet.new(@window, x: 100, y: 350, random: true))
   end
 end
