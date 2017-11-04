@@ -23,7 +23,9 @@ require './lib/planet_factory'
 #    +/- 10 degrees) it will stick on it.
 # [] Population transfer line changes color depending on if it is lined up with another planet or not
 
-# [] Battle system...
+# [] Create new objects for transferring populations (ships), which tranfer from planet to planet
+#    and take time to move (would look cool as trailing lines)
+# [] Create an indicator of some sort for population relative to max (maybe a circumference line)
 
 # [] Import music
 #    Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
