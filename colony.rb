@@ -9,22 +9,29 @@ require './lib/planet_factory'
 # [DONE] Two planets (drawn), rendered w/ mouse selection and image change when selected
 # [DONE] Import planet sprites
 # [DONE] Create random planet sizing, give planet a size trait, and adjust selection box accordingly
+# [DONE] Create populations (increase by planet size, so hold a population and max population value) and ensure they max out out
+# [DONE] When selected, support moving ALL planet's population to an adjacent selected planet
+# [DONE] When a planet is selected, on mousing over a nearby planet
 
-# [] Create populations (increase by planet size, so hold a population and max population value) and ensure they max out out
-  # Bonus points, population growth slows approching max
+# [] Figure out a way to capture what an adjacent planet is, perhaps, for each planet, create an array of objects
+#    for each adjacent planet which is the degrees (0 - 360) they are relative the current
+# [] Update the selection method to not unselect when clicking empty space
+# [] When a planet is selected and holding down the mouse, draw a line to the mouse of a maximum length, showing
+#    a value of the current line length (0 - 100%)
+# [] Get some trigger to fire when the mouse is released, and returns the length of the line
+# [] Create a way for the population transfer line to 'stick' with an adjacent planet (ie, if pointing towards it or
+#    +/- 10 degrees) it will stick on it.
+# [] Population transfer line changes color depending on if it is lined up with another planet or not
 
-# [] Add in a debug mode to draw hitboxes
-# [] Import music :)
-# Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
-# [] Import music toggle
-
-# [] When selected, support moving ALL planet's population to an adjacent selected planet
 # [] Battle system...
 
+# [] Import music
+#    Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
+# [] Import music toggle
 
 class GameWindow < Gosu::Window
 
-  attr_accessor :entities, :delta
+  attr_accessor :entities, :delta, :planets
 
   def initialize
     super(288, 512, false)
@@ -36,11 +43,11 @@ class GameWindow < Gosu::Window
     @last_time = 0
 
     # Images and fonts
-    #cursor
     background_image
     @font = Gosu::Font.new(self, 'Courier', 40)
 
     @entities = []
+    @planets = []
 
     # Load entities
     PlanetFactory.new(self)
@@ -48,6 +55,9 @@ class GameWindow < Gosu::Window
     # Add entities
     @entities << []
     @entities.flatten!
+
+    # Button one shots
+    @lm_previous = false
   end
 
   def needs_cursor?
@@ -61,18 +71,28 @@ class GameWindow < Gosu::Window
     @entities.each do |entity|
       entity.update
     end
+
+    update_previous_button_downs
   end
 
   # Called by Gosu
   def draw
     background_image.draw(0, 0, 0)
-    #cursor.draw self.mouse_x, self.mouse_y, 10
 
-    # draw the time
     @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
 
     @entities.each do |entity|
       entity.draw
+    end
+  end
+
+  def button_down_one_shot?(id)
+    case id
+    # Add more conditions as needed
+      when Gosu::MsLeft
+        button_down?(id) && !@lm_previous
+    else
+      button_down?(id)
     end
   end
 
@@ -84,6 +104,10 @@ class GameWindow < Gosu::Window
     @last_time = current_time
 
     @elapsed_time += @delta
+  end
+
+  def update_previous_button_downs
+    @lm_previous = button_down? Gosu::MsLeft
   end
 
   def background_image
