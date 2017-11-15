@@ -52,7 +52,6 @@ class Planet
   end
 
   def update
-    update_selection
     update_status
     update_population
   end
@@ -61,8 +60,11 @@ class Planet
     x.between?(@x, @x + @width) && y.between?(@y, @y + @width)
   end
 
+  def selected?
+    @selected
+  end
+
   def select
-    @window.planets.each(&:unselect)
     @selected = true
   end
 
@@ -80,6 +82,19 @@ class Planet
 
   def receiving_population?
     @receiving_started_at
+  end
+
+  def transfer_population_to(other_planet)
+    remaining_population = 10
+    if @population > remaining_population
+      tranferring_population = @population - remaining_population
+      transfer_to_friendly other_planet, tranferring_population, remaining_population if other_planet.friendly?
+      transfer_to_non_friendly other_planet, tranferring_population, remaining_population if !other_planet.friendly?
+    end
+  end
+
+  def can_transfer_to?(other_planet)
+    self != other_planet
   end
 
   private
@@ -121,27 +136,6 @@ class Planet
     @population_font.draw("#{@population.to_i}", @x, @y, 7, 1, 1, color)
   end
 
-  def selection_image_offset
-    @selection_image_offset ||= ((BASE_IMAGE_SIZE * @image_image_ratio) -
-                                (BASE_SELECTION_SIZE * @selection_image_ratio)) * 0.5
-  end
-
-  def update_selection
-    if @window.button_down_one_shot? Gosu::MsLeft
-      if @selected && (other_planet = other_planet_being_selected) && can_transfer_to?(other_planet)
-        puts 'unselect and transfer'
-        transfer_population_to(other_planet)
-        unselect
-      elsif friendly? && within_planet?(@window.mouse_x, @window.mouse_y)
-        puts 'select'
-        select
-      else
-        puts 'unselect'
-        unselect
-      end
-    end
-  end
-
   def update_status
     if receiving_population?
       finish_receiving_population if (Time.now - @receiving_started_at > 0.5)
@@ -154,25 +148,9 @@ class Planet
     @population = @population * E ** (rate * (1 - (@population/@max_population)))
   end
 
-  def other_planet_being_selected
-    @window.planets.reject { |planet| planet == self}.each do |planet|
-      return planet if planet.within_planet?(@window.mouse_x, @window.mouse_y)
-    end
-    nil
-  end
-
-  def transfer_population_to(other_planet)
-    remaining_population = 10
-    if @population > remaining_population
-      tranferring_population = @population - remaining_population
-      transfer_to_friendly other_planet, tranferring_population, remaining_population if other_planet.friendly?
-      transfer_to_non_friendly other_planet, tranferring_population, remaining_population if !other_planet.friendly?
-    end
-    other_planet.receive_population
-  end
-
-  def can_transfer_to?(other_planet)
-    true
+  def selection_image_offset
+    @selection_image_offset ||= ((BASE_IMAGE_SIZE * @image_image_ratio) -
+        (BASE_SELECTION_SIZE * @selection_image_ratio)) * 0.5
   end
 
   def transfer_to_friendly(other_planet, tranferring_population, remaining_population)

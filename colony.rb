@@ -4,6 +4,7 @@ require 'gosu'
 require 'byebug'
 
 require './lib/planet_factory'
+require './lib/planet_manager'
 
 # Phases
 # [DONE] Two planets (drawn), rendered w/ mouse selection and image change when selected
@@ -14,7 +15,9 @@ require './lib/planet_factory'
 # [DONE] When a planet is selected, on mousing over a nearby planet
 # [DONE] Planet transfer animation
 
-# [] Bug: The logic for planet selection when transfering inconsistently transfers selection. Not sure what's going on.
+# [] WIP: extracting all planet selection logic into Selection.rb
+
+# [] Clean up planet.rb
 # [] Figure out a way to capture what an adjacent planet is, perhaps, for each planet, create an array of objects
 #    for each adjacent planet which is the degrees (0 - 360) they are relative the current
 # [] Update the selection method to not unselect when clicking empty space
@@ -57,7 +60,7 @@ class GameWindow < Gosu::Window
     PlanetFactory.new(self)
 
     # Add entities
-    @entities << []
+    @entities << [PlanetManager.new(self)]
     @entities.flatten!
 
     # Button one shots
