@@ -12,7 +12,9 @@ require './lib/planet_factory'
 # [DONE] Create populations (increase by planet size, so hold a population and max population value) and ensure they max out out
 # [DONE] When selected, support moving ALL planet's population to an adjacent selected planet
 # [DONE] When a planet is selected, on mousing over a nearby planet
+# [DONE] Planet transfer animation
 
+# [] Bug: The logic for planet selection when transfering inconsistently transfers selection. Not sure what's going on.
 # [] Figure out a way to capture what an adjacent planet is, perhaps, for each planet, create an array of objects
 #    for each adjacent planet which is the degrees (0 - 360) they are relative the current
 # [] Update the selection method to not unselect when clicking empty space
@@ -96,6 +98,11 @@ class GameWindow < Gosu::Window
     else
       button_down?(id)
     end
+  end
+
+  def oscillating_color(base_color, oscillation_scale = 150)
+    result = base_color.gl + Math::acos(@elapsed_time%1 ) * oscillation_scale
+    result.to_i
   end
 
   private

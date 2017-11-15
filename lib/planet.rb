@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require './lib/helpers/circle'
+require './lib/modules/has_faction'
 include Math
 
 class Planet
+  include HasFaction
+
   attr_accessor :x, :y, :selected, :population, :faction
   BASE_IMAGE_SIZE = 300
   BASE_SELECTION_SIZE = 300
@@ -27,14 +30,7 @@ class Planet
       @population = 0.0
     end
 
-    @faction = case args[:faction]
-                 when :friendly
-                   :friendly
-                 when :enemy
-                   :enemy
-                 else
-                   :neutral
-               end
+    assign_faction args[:faction]
 
     @max_population = @size * 100
 
@@ -53,32 +49,16 @@ class Planet
     draw_selection_image
 
     draw_population
-    # TODO, on hover over lighten image
   end
 
   def update
     update_selection
+    update_status
     update_population
   end
 
   def within_planet?(x, y)
     x.between?(@x, @x + @width) && y.between?(@y, @y + @width)
-  end
-
-  def make_friendly
-    @faction = :friendly
-  end
-
-  def friendly?
-    @faction == :friendly
-  end
-
-  def enemy?
-    @faction == :enemy
-  end
-
-  def neutral?
-    !friendly? && !enemy?
   end
 
   def select
@@ -88,6 +68,18 @@ class Planet
 
   def unselect
     @selected = false
+  end
+
+  def receive_population
+    @receiving_started_at = Time.now
+  end
+
+  def finish_receiving_population
+    @receiving_started_at = nil
+  end
+
+  def receiving_population?
+    @receiving_started_at
   end
 
   private
@@ -101,7 +93,15 @@ class Planet
   end
 
   def draw_selection_image
-    if @selected
+    if receiving_population?
+      selection_image.draw(@x + selection_image_offset,
+                           @y + selection_image_offset,
+                           0,
+                           @selection_image_ratio,
+                           @selection_image_ratio,
+                           @window.oscillating_color(Gosu::Color::GREEN)
+      )
+    elsif @selected
       selection_image.draw(@x + selection_image_offset,
                            @y + selection_image_offset,
                            0,
@@ -128,15 +128,23 @@ class Planet
 
   def update_selection
     if @window.button_down_one_shot? Gosu::MsLeft
-      if friendly? && within_planet?(@window.mouse_x, @window.mouse_y)
+      if @selected && (other_planet = other_planet_being_selected) && can_transfer_to?(other_planet)
+        puts 'unselect and transfer'
+        transfer_population_to(other_planet)
+        unselect
+      elsif friendly? && within_planet?(@window.mouse_x, @window.mouse_y)
         puts 'select'
         select
-      elsif @selected && (other_planet = other_planet_being_selected)
-        transfer_population_to other_planet
       else
         puts 'unselect'
         unselect
       end
+    end
+  end
+
+  def update_status
+    if receiving_population?
+      finish_receiving_population if (Time.now - @receiving_started_at > 0.5)
     end
   end
 
@@ -146,21 +154,33 @@ class Planet
     @population = @population * E ** (rate * (1 - (@population/@max_population)))
   end
 
-  def transfer_population_to other_planet
+  def other_planet_being_selected
+    @window.planets.reject { |planet| planet == self}.each do |planet|
+      return planet if planet.within_planet?(@window.mouse_x, @window.mouse_y)
+    end
+    nil
+  end
+
+  def transfer_population_to(other_planet)
     remaining_population = 10
     if @population > remaining_population
       tranferring_population = @population - remaining_population
       transfer_to_friendly other_planet, tranferring_population, remaining_population if other_planet.friendly?
       transfer_to_non_friendly other_planet, tranferring_population, remaining_population if !other_planet.friendly?
     end
+    other_planet.receive_population
   end
 
-  def transfer_to_friendly other_planet, tranferring_population, remaining_population
+  def can_transfer_to?(other_planet)
+    true
+  end
+
+  def transfer_to_friendly(other_planet, tranferring_population, remaining_population)
     other_planet.population += tranferring_population
     @population = remaining_population
   end
 
-  def transfer_to_non_friendly other_planet, tranferring_population, remaining_population
+  def transfer_to_non_friendly(other_planet, tranferring_population, remaining_population)
     if other_planet.population > tranferring_population
       other_planet.population -= tranferring_population
     elsif other_planet.population == tranferring_population
@@ -170,12 +190,5 @@ class Planet
       other_planet.make_friendly
     end
     @population = remaining_population
-  end
-
-  def other_planet_being_selected
-    @window.planets.reject { |planet| planet == self}.each do |planet|
-      return planet if planet.within_planet?(@window.mouse_x, @window.mouse_y)
-    end
-    nil
   end
 end
