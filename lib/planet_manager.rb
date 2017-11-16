@@ -74,9 +74,15 @@ class PlanetManager
     # calculate the angle between the two planets
     # using some trig, draw to parallel lines, of a fixed separating distance, between the two planets
 
-    # find angle between: Math.tan(y1 - y2, x1 - x2)
+    # find angle between: Math.tan(y1 - y2/x1 - x2)
     # ...
     # profit
+
+    x_difference = (x2 - x1).to_f
+    y_difference = (y1 - y2).to_f
+    puts "x difference: #{x_difference}"
+    puts "y difference: #{y_difference}"
+    puts (Math.atan(x_difference/y_difference) * 360 / (2 * Math::PI)) # radians to degrees
 
     @window.draw_line(x1,
                       y1,

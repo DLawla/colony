@@ -99,7 +99,7 @@ class Planet
   end
 
   def can_transfer_to?(other_planet)
-    (@row - other_planet.row).abs <= 1
+    other_planet != self && (@row - other_planet.row).abs <= 1
   end
 
   private
