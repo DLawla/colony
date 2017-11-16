@@ -7,22 +7,28 @@ include Math
 class Planet
   include HasFaction
 
-  attr_accessor :x, :y, :selected, :population, :faction
+  attr_accessor :x, :x_center, :y, :y_center, :selected, :population, :faction, :row
   BASE_IMAGE_SIZE = 300
   BASE_SELECTION_SIZE = 300
+  MIN_PLANET_SIZE = 30
+  MAX_PLANET_SIZE = 90
+  DEFAULT_PLANET_SIZE = 60
 
   def initialize(window, args = {})
     @window = window
-    @x = args[:x]
-    @y = args[:y]
-
     @selected = false
 
     if args[:random] && args[:random] == true
-      @size = @width = rand(30..90)
+      @size = @width = rand(MIN_PLANET_SIZE..MAX_PLANET_SIZE)
     else
-      @size = @width = 60
+      @size = @width = DEFAULT_PLANET_SIZE
     end
+
+    @x_center = args[:x_center]
+    @x = x_center - @size/2
+    @y_center = args[:y_center]
+    @y = y_center - @size/2
+    @row = args[:row]
 
     if args[:unpopulated] && args[:unpopulated] == true
       @population = 0.0
@@ -47,7 +53,6 @@ class Planet
   def draw
     image.draw(@x, @y, 5, @image_image_ratio, @image_image_ratio)
     draw_selection_image
-
     draw_population
   end
 
@@ -86,15 +91,15 @@ class Planet
 
   def transfer_population_to(other_planet)
     remaining_population = 10
-    if @population > remaining_population
-      tranferring_population = @population - remaining_population
+    if population > remaining_population
+      tranferring_population = population - remaining_population
       transfer_to_friendly other_planet, tranferring_population, remaining_population if other_planet.friendly?
       transfer_to_non_friendly other_planet, tranferring_population, remaining_population if !other_planet.friendly?
     end
   end
 
   def can_transfer_to?(other_planet)
-    self != other_planet
+    (@row - other_planet.row).abs <= 1
   end
 
   private
@@ -134,6 +139,7 @@ class Planet
       color = Gosu::Color::YELLOW
     end
     @population_font.draw("#{@population.to_i}", @x, @y, 7, 1, 1, color)
+    @population_font.draw("#{row}", @x + 10, @y + 10, 7, 1, 1, color)
   end
 
   def update_status
