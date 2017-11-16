@@ -15,11 +15,11 @@ require './lib/planet_manager'
 # [DONE] When a planet is selected, on mousing over a nearby planet
 # [DONE] Planet transfer animation
 # [DONE] Extracting all planet selection logic into Selection.rb
+# [DONE] Clean up planet.rb, if required
+# [DONE] Random planet location generator
 
-# [] Clean up planet.rb, if required
 # [] Figure out a way to capture what an adjacent planet is, perhaps, for each planet, create an array of objects
 #    for each adjacent planet which is the degrees (0 - 360) they are relative the current
-# [] Update the selection method to not unselect when clicking empty space
 # [] When a planet is selected and holding down the mouse, draw a line to the mouse of a maximum length, showing
 #    a value of the current line length (0 - 100%)
 # [] Get some trigger to fire when the mouse is released, and returns the length of the line

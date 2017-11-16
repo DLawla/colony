@@ -18,21 +18,21 @@ class Planet
 
     @selected = false
 
-    if args[:random]
+    if args[:random] && args[:random] == true
       @size = @width = rand(30..90)
     else
       @size = @width = 60
     end
 
-    unless args[:unpopulated]
-      @population = 10.0
-    else
+    if args[:unpopulated] && args[:unpopulated] == true
       @population = 0.0
+    else
+      @population = 10.0
     end
 
-    assign_faction args[:faction]
-
     @max_population = @size * 100
+
+    assign_faction args[:faction]
 
     image
     selection_image
