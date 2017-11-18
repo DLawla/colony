@@ -7,7 +7,7 @@ include Math
 class Planet
   include HasFaction
 
-  attr_accessor :x, :x_center, :y, :y_center, :selected, :population, :faction, :row
+  attr_accessor :x, :x_center, :y, :y_center, :selected, :population, :row
   BASE_IMAGE_SIZE = 300
   BASE_SELECTION_SIZE = 300
   MIN_PLANET_SIZE = 30
@@ -50,15 +50,15 @@ class Planet
     @population_font = Gosu::Font.new(@window, 'Courier', 15)
   end
 
+  def update
+    update_status
+    update_population
+  end
+
   def draw
     image.draw(@x, @y, 5, @image_image_ratio, @image_image_ratio)
     draw_selection_image
     draw_population
-  end
-
-  def update
-    update_status
-    update_population
   end
 
   def within_planet?(x, y)

@@ -15,17 +15,17 @@
 
 
 ####TODO
-- [] When a planet is selected and hovering over a planet that can transfer to, draw a line to the mouse of a maximum length, showing
-   a value of the current line length (0 - 100%)
-- [] Get some trigger to fire when the mouse is released, and returns the length of the line
-- [] Create a way for the population transfer line to 'stick' with an adjacent planet (ie, if pointing towards it or
-   +/- 10 degrees) it will stick on it.
-- [] Population transfer line changes color depending on if it is lined up with another planet or not
 - [] Create new objects for transferring populations (ships), which tranfer from planet to planet
    and take time to move (would look cool as trailing lines)
+- [] When a planet is selected, draw a line (thick, so maybe many) to all planets that can transfer to
+- [] When hovering over transfer line, or its planet, make it be a new color
+- [] When transferring to another planet, allow clicking on transfer line, where the location of the click on the
+    transfer line denotes how much to transfer
 - [] Create an indicator of some sort for population relative to max (maybe a circumference line)
 - [] Import music
    Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
 - [] Import music toggle
+- [] Start menu w/ start game button
+- [] Support for ending a game, showing total time, and allowing a restart
 
 

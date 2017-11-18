@@ -23,15 +23,10 @@ class GameWindow < Gosu::Window
     background_image
     @font = Gosu::Font.new(self, 'Courier', 40)
 
-    @entities = []
-    @planets = []
-
     # Load entities
+    @entities = []
     PlanetFactory.new(self)
-
-    # Add entities
-    @entities << [PlanetManager.new(self)]
-    @entities.flatten!
+    add_entities([PlanetManager.new(self)])
 
     # Button one shots
     @lm_previous = false
@@ -76,6 +71,18 @@ class GameWindow < Gosu::Window
   def oscillating_color(base_color, oscillation_scale = 150)
     result = base_color.gl + Math::acos(@elapsed_time%1 ) * oscillation_scale
     result.to_i
+  end
+
+  def add_entities(entities_array)
+    @entities += entities_array
+  end
+
+  def destroy_entities(entities_array)
+    @entities -= entities_array
+  end
+
+  def planets
+    @entities.select { |e| e.is_a? Planet }
   end
 
   private

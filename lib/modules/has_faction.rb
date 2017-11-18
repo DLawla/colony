@@ -1,5 +1,7 @@
 module HasFaction
   def self.included(base)
+    attr_accessor :faction
+
     base.extend(ClassMethods)
   end
 

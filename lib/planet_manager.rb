@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require './lib/planet'
+require './lib/fleet'
 
 class PlanetManager
   def initialize(window)
@@ -24,8 +25,9 @@ class PlanetManager
       if selected_planet
         if planet_moused_over
           if selected_planet.can_transfer_to?(planet_moused_over)
-            selected_planet.transfer_population_to(planet_moused_over)
-            planet_moused_over.receive_population
+            @window.add_entities([Fleet.new(@window, selected_planet, planet_moused_over, selected_planet.population)])
+            # selected_planet.transfer_population_to(planet_moused_over)
+            # planet_moused_over.receive_population
             remove_planet_selection
           end
         else
@@ -78,11 +80,13 @@ class PlanetManager
     # ...
     # profit
 
-    x_difference = (x2 - x1).to_f
-    y_difference = (y1 - y2).to_f
-    puts "x difference: #{x_difference}"
-    puts "y difference: #{y_difference}"
-    puts (Math.atan(x_difference/y_difference) * 360 / (2 * Math::PI)) # radians to degrees
+    # x_difference = (x2 - x1).to_f
+    # y_difference = (y1 - y2).to_f
+    # puts "x difference: #{x_difference}"
+    # puts "y difference: #{y_difference}"
+    # puts (Math.atan(x_difference/y_difference) * 360 / (2 * Math::PI)) # radians to degrees
+
+    puts Gosu.angle(x1, y1, x2, y2)
 
     @window.draw_line(x1,
                       y1,

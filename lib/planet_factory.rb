@@ -8,8 +8,7 @@ class PlanetFactory
 
     planets = build_planets
 
-    @window.entities.push(planets).flatten!
-    @window.planets.push(planets).flatten!
+    @window.add_entities(planets)
   end
 
   private
@@ -22,7 +21,6 @@ class PlanetFactory
                 elsif i == coordinates.length - 1
                   :friendly
                 end
-      unpopulated = faction
       Planet.new(@window,
                  x_center: coordinate[:x],
                  y_center: coordinate[:y],
