@@ -49,10 +49,10 @@ class SelectionManager
     if planet_source = selected_planet
       transferrable_planets = @window.planets.select { |planet| planet_source.can_transfer_to? planet }
       transferrable_planets.each do |transferrable_planet|
-        draw_lanes(planet_source.x_center,
-                   planet_source.y_center,
-                   transferrable_planet.x_center,
-                   transferrable_planet.y_center)
+        draw_transfer_lane(planet_source.x_center,
+                           planet_source.y_center,
+                           transferrable_planet.x_center,
+                           transferrable_planet.y_center)
       end
     end
   end
@@ -77,21 +77,12 @@ class SelectionManager
     planet.select
   end
 
-  def draw_lanes(x1, y1, x2, y2)
-    # calculate the angle between the two planets
-    # using some trig, draw to parallel lines, of a fixed separating distance, between the two planets
-
-    # find angle between: Math.tan(y1 - y2/x1 - x2)
-    # ...
-    # profit
-
-    # x_difference = (x2 - x1).to_f
-    # y_difference = (y1 - y2).to_f
-    # puts "x difference: #{x_difference}"
-    # puts "y difference: #{y_difference}"
-    # puts (Math.atan(x_difference/y_difference) * 360 / (2 * Math::PI)) # radians to degrees
-
+  def draw_transfer_lane(x1, y1, x2, y2)
     puts Gosu.angle(x1, y1, x2, y2)
+
+    # red = Gosu::Color::RED
+    # red.send(:alpha=, 2)
+    # @window.draw_quad(100, 100, red, 180, 120, 0xffffffff, 120, 180, 0xffffffff, 200, 200, 0xffffffff, 1)
 
     @window.draw_line(x1,
                       y1,
@@ -99,8 +90,7 @@ class SelectionManager
                       x2,
                       y2,
                       Gosu::Color::RED,
-                      z = 1,
-                      :additive)
+                      z = 1)
   end
 
   def load_and_send_fleet starting_planet, destination_planet, percentage_leaving
