@@ -3,7 +3,7 @@
 require './lib/planet'
 require './lib/fleet'
 
-class PlanetManager
+class SelectionManager
   def initialize(window)
     @window = window
   end
@@ -14,6 +14,7 @@ class PlanetManager
 
   def draw
     draw_transfer_lanes
+    draw_moused_over_transfer_lane
   end
 
   private
@@ -45,13 +46,19 @@ class PlanetManager
     # If a planet is selected, and the mouse is hovering over another planet which population can be transferred to,
     # then draw a couple lines (making a lane), between the two planets
     planet_source = selected_planet
-    planet_destination = planet_moused_over
-    if planet_source && planet_destination && planet_source.can_transfer_to?(planet_destination)
-      draw_lanes(planet_source.x_center,
-                 planet_source.y_center,
-                 planet_destination.x_center,
-                 planet_destination.y_center)
+    if planet_source = selected_planet
+      transferrable_planets = @window.planets.select { |planet| planet_source.can_transfer_to? planet }
+      transferrable_planets.each do |transferrable_planet|
+        draw_lanes(planet_source.x_center,
+                   planet_source.y_center,
+                   transferrable_planet.x_center,
+                   transferrable_planet.y_center)
+      end
     end
+  end
+
+  def draw_moused_over_transfer_lane
+    # if user is drawing at all over a transfer lane, somehow draw
   end
 
   def selected_planet
@@ -88,11 +95,12 @@ class PlanetManager
 
     @window.draw_line(x1,
                       y1,
-                      Gosu::Color::RED,
+                      Gosu::Color::GREEN,
                       x2,
                       y2,
-                      Gosu::Color::GREEN,
-                      z = 1)
+                      Gosu::Color::RED,
+                      z = 1,
+                      :additive)
   end
 
   def load_and_send_fleet starting_planet, destination_planet, percentage_leaving

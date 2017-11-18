@@ -4,7 +4,7 @@ require 'gosu'
 require 'byebug'
 
 require './lib/planet_factory'
-require './lib/planet_manager'
+require './lib/selection_manager'
 
 class GameWindow < Gosu::Window
 
@@ -26,7 +26,7 @@ class GameWindow < Gosu::Window
     # Load entities
     @entities = []
     PlanetFactory.new(self)
-    add_entities([PlanetManager.new(self)])
+    add_entities([SelectionManager.new(self)])
 
     # Button one shots
     @lm_previous = false

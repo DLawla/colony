@@ -12,7 +12,7 @@ class Planet
   BASE_SELECTION_SIZE = 300
   MIN_PLANET_SIZE = 30
   MAX_PLANET_SIZE = 90
-  DEFAULT_PLANET_SIZE = 60
+  DEFAULT_PLANET_SIZE = 90
 
   def initialize(window, args = {})
     @window = window
@@ -130,7 +130,6 @@ class Planet
       color = Gosu::Color::YELLOW
     end
     @population_font.draw("#{@population.to_i}", @x, @y, 7, 1, 1, color)
-    @population_font.draw("#{row}", @x + 10, @y + 10, 7, 1, 1, color)
   end
 
   def update_status
