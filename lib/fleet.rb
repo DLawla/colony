@@ -61,8 +61,7 @@ class Fleet
 
   def disembark_if_arrived
     if @destination_planet.within_planet? @x, @y
-      @home_planet.transfer_population_to(@destination_planet)
-
+      disembark_population
       @window.destroy_entities([self])
     end
   end
@@ -72,6 +71,25 @@ class Fleet
   end
 
   def image_offset
-    @image_offset ||= -BASE_IMAGE_SIZE/0.5
+    @image_offset ||= -BASE_IMAGE_SIZE/2
+  end
+
+  def disembark_population
+    if faction == @destination_planet.faction
+      @destination_planet.population += @population
+    else
+      resolve_combat
+    end
+  end
+
+  def resolve_combat
+    if @destination_planet.population > @population
+      @destination_planet.population -= @population
+    elsif @destination_planet.population == @destination_planet
+      @destination_planet.population = 1
+    else
+      @destination_planet.change_faction_to faction
+      @destination_planet.population = @population - @destination_planet.population
+    end
   end
 end

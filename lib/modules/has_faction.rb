@@ -19,8 +19,8 @@ module HasFaction
                end
   end
 
-  def make_friendly
-    @faction = :friendly
+  def change_faction_to new_faction
+    @faction = new_faction
   end
 
   def friendly?

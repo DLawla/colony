@@ -25,9 +25,7 @@ class PlanetManager
       if selected_planet
         if planet_moused_over
           if selected_planet.can_transfer_to?(planet_moused_over)
-            @window.add_entities([Fleet.new(@window, selected_planet, planet_moused_over, selected_planet.population)])
-            # selected_planet.transfer_population_to(planet_moused_over)
-            # planet_moused_over.receive_population
+            load_and_send_fleet selected_planet, planet_moused_over, 100
             remove_planet_selection
           end
         else
@@ -95,5 +93,14 @@ class PlanetManager
                       y2,
                       Gosu::Color::GREEN,
                       z = 1)
+  end
+
+  def load_and_send_fleet starting_planet, destination_planet, percentage_leaving
+    percentage_leaving = percentage_leaving.clamp(1, 100)
+    transfering_population = starting_planet.population * (percentage_leaving/100)
+    transfering_population = [starting_planet.population - 10, transfering_population].min
+
+    @window.add_entities([Fleet.new(@window, starting_planet, destination_planet, transfering_population)])
+    starting_planet.population -= transfering_population
   end
 end

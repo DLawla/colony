@@ -89,15 +89,6 @@ class Planet
     @receiving_started_at
   end
 
-  def transfer_population_to(other_planet)
-    remaining_population = 10
-    if population > remaining_population
-      tranferring_population = population - remaining_population
-      transfer_to_friendly other_planet, tranferring_population, remaining_population if other_planet.friendly?
-      transfer_to_non_friendly other_planet, tranferring_population, remaining_population if !other_planet.friendly?
-    end
-  end
-
   def can_transfer_to?(other_planet)
     other_planet != self && (@row - other_planet.row).abs <= 1
   end
@@ -157,22 +148,5 @@ class Planet
   def selection_image_offset
     @selection_image_offset ||= ((BASE_IMAGE_SIZE * @image_image_ratio) -
         (BASE_SELECTION_SIZE * @selection_image_ratio)) * 0.5
-  end
-
-  def transfer_to_friendly(other_planet, tranferring_population, remaining_population)
-    other_planet.population += tranferring_population
-    @population = remaining_population
-  end
-
-  def transfer_to_non_friendly(other_planet, tranferring_population, remaining_population)
-    if other_planet.population > tranferring_population
-      other_planet.population -= tranferring_population
-    elsif other_planet.population == tranferring_population
-      other_planet.population = 1
-    else
-      other_planet.population = tranferring_population - other_planet.population
-      other_planet.make_friendly
-    end
-    @population = remaining_population
   end
 end
