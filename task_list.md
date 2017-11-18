@@ -27,10 +27,14 @@
    Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
 - [] Import music toggle
 - [] Start menu w/ start game button
+        button library option: https://github.com/Aerotune/Gosu-Cloudy-Ui
 - [] Support for ending a game, showing total time, and allowing a restart
+- [] Builing an AI
 
 ####Cool additions
 - [] animations: trailing lines behind fleets, add eliptical trajectories to fleets
 
 ####Next phase
+- Rebuild using a more feature rich library like Chingu
 - Networking support (two players playing against each other). Networking engine might be possible through EventMachine(https://github.com/eventmachine/eventmachine)
+- Teach a neural network to play as the AI -- can use Ruby FANN possibly (https://www.practicalai.io/teaching-a-neural-network-to-play-a-game-with-q-learning/)

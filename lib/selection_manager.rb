@@ -80,9 +80,10 @@ class SelectionManager
   def draw_transfer_lane(x1, y1, x2, y2)
     puts Gosu.angle(x1, y1, x2, y2)
 
-    # red = Gosu::Color::RED
-    # red.send(:alpha=, 2)
-    # @window.draw_quad(100, 100, red, 180, 120, 0xffffffff, 120, 180, 0xffffffff, 200, 200, 0xffffffff, 1)
+    red = Gosu::Color::RED
+    red.send(:alpha=, 2)
+    @window.draw_quad(100, 100, red, 180, 120, 0xffffffff, 120, 180, 0xffffffff, 200, 200, 0xffffffff, 1)
+
 
     @window.draw_line(x1,
                       y1,
