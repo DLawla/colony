@@ -14,24 +14,33 @@
 - [DONE] Figure out a way to capture what an adjacent planet is -- DONE via row instance variable
 - [DONE] Create new objects for transferring populations (ships), which tranfer from planet to planet
    and take time to move (would look cool as trailing lines)
+- [DONE] Make sample body using Chipmunk
 
 ####TODO
 
-- [] Make sample body using Chipmunk
-- [] Make transfer lanes quads (going to have to translate vertices to be orthogonal to direction)
-- [] When hovering transfer lane, make it larger, and change size depending on mouse location
-- [] Make click on transfer lane determine percentage of population transferred
+- [] Make transfer lane bodies
+    - Render as quad (at angle...)
+    - Handle deleting them when unselecting
+    - Change status (selected) on mouse over
+    - Overlay new, wider quad when selected or planet is moused over up until the location of the mouse 
+    - When mouse is pressed on planet or on selected transfer lane, work out the percentage and perform transfer
 - [] Refactor ZIndices into a module (one was added)
+- [] Make faction-owned planet grow in population faster
 - [] Create an indicator of some sort for population relative to max (maybe a circumference line)
+        - Could maybe do this with simple triangles? Would look better with arcs or solid circle
 - [] Change fleet animation size depending on population size
-- [] Make fleets not transfer immediately, but when invading/transferring, population grows more slowly or not at all
+- [] Make fleets not transfer immediately, but still really fast (perhaps halt all growth during this time)
 - [] Import music
    Have two .ogg files, but this is awesome too: Miracle by Blackmill﻿ OR Know You Well (Feat. Laura Hahn) by Michael St﻿ Laurent
 - [] Import music toggle
 - [] Start menu w/ start game button
         button library option: https://github.com/Aerotune/Gosu-Cloudy-Ui
 - [] Support for ending a game, showing total time, and allowing a restart
-- [] Builing an AI
+
+####Building an AI
+- [] Have to work out some sort of interface to do simple transfers of a percentage from planet x to y
+    - Should probably properly protect this w/ permissions to future-proof it a bit
+- [] ...
 
 ####Cool additions
 - [] animations: trailing lines behind fleets, add eliptical trajectories to fleets
