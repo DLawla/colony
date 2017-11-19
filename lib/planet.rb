@@ -30,15 +30,17 @@ class Planet
     @y = y_center - @size/2
     @row = args[:row]
 
+    assign_faction args[:faction]
+
     if args[:unpopulated] && args[:unpopulated] == true
       @population = 0.0
+    elsif friendly?
+      @population = 500.0
     else
       @population = 10.0
     end
 
     @max_population = @size * 100
-
-    assign_faction args[:faction]
 
     image
     selection_image

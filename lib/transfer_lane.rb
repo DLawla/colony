@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class TransferLane
-  WIDTH_UNSELECTED = 20
+  WIDTH_UNSELECTED = 10
+
+  COLOR_FRIENDLY = 0x70_00ff00
+  COLOR_ENEMY = 0x70_ff0000
+  COLOR_TRANSPARENT = 0x00_808080
 
   def initialize(window, home_planet, destination_planet)
     @window = window
@@ -43,24 +47,19 @@ class TransferLane
   end
 
   def draw_lane
-    red = Gosu::Color::RED
-    red.send(:alpha=, 75)
-
     Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
-      @window.draw_quad(@home_planet.x_center - WIDTH_UNSELECTED/2, @home_planet.y_center + lane_distance, red,
-                        @home_planet.x_center + WIDTH_UNSELECTED/2, @home_planet.y_center + lane_distance, red,
-                        @home_planet.x_center - WIDTH_UNSELECTED/2, @home_planet.y_center, red,
-                        @home_planet.x_center + WIDTH_UNSELECTED/2, @home_planet.y_center, red,
+      # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
+      @window.draw_quad(@home_planet.x_center - WIDTH_UNSELECTED/2, @home_planet.y_center + lane_distance, lane_border_color,
+                        @home_planet.x_center, @home_planet.y_center + lane_distance, lane_color,
+                        @home_planet.x_center - WIDTH_UNSELECTED/2, @home_planet.y_center, lane_border_color,
+                        @home_planet.x_center, @home_planet.y_center, lane_color,
+                        1)
+      @window.draw_quad(@home_planet.x_center, @home_planet.y_center + lane_distance, lane_color,
+                        @home_planet.x_center + WIDTH_UNSELECTED/2, @home_planet.y_center + lane_distance, lane_border_color,
+                        @home_planet.x_center, @home_planet.y_center, lane_color,
+                        @home_planet.x_center + WIDTH_UNSELECTED/2, @home_planet.y_center, lane_border_color,
                         1)
     end
-
-    @window.draw_line(@home_planet.x_center,
-                      @home_planet.y_center,
-                      Gosu::Color::GREEN,
-                      @destination_planet.x_center,
-                      @destination_planet.y_center,
-                      Gosu::Color::RED,
-                      z = 1)
   end
 
   def lane_distance
@@ -68,5 +67,13 @@ class TransferLane
                                 @home_planet.y_center,
                                 @destination_planet.x_center,
                                 @destination_planet.y_center)
+  end
+
+  def lane_color
+    @lane_color ||= @home_planet.faction == @destination_planet.faction ? COLOR_FRIENDLY : COLOR_ENEMY
+  end
+
+  def lane_border_color
+    COLOR_TRANSPARENT
   end
 end
