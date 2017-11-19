@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 class TransferLane
+  WIDTH_UNSELECTED = 20
+
   def initialize(window, home_planet, destination_planet)
     @window = window
     @home_planet = home_planet
     @destination_planet = destination_planet
 
-    initialize_coordinates
+    intialize_bearing
   end
 
   def update
@@ -25,20 +27,15 @@ class TransferLane
     # m = (y1 - b)/x1
     # => (y2 - b)/x2
     # y2/x2 = y1x2/x1 - bx2/x1 + b/x2
-
-
-
   end
 
   private
 
-  def initialize_coordinates
-    bearing = Gosu.angle(@home_planet.x_center,
-                         @home_planet.y_center,
-                         @destination_planet.x_center,
-                         @destination_planet.y_center)
-    puts bearing
-    @coordinates = [{x: 100, y: 100}, {x: 160, y: 140}, {x: 140, y: 160}, {x: 200, y: 200}]
+  def intialize_bearing
+    @bearing = Gosu.angle(@destination_planet.x_center,
+                          @destination_planet.y_center,
+                          @home_planet.x_center,
+                          @home_planet.y_center)
   end
 
   def transfer_on_click
@@ -46,24 +43,16 @@ class TransferLane
   end
 
   def draw_lane
-    # puts Gosu.angle(x1, y1, x2, y2)
-
     red = Gosu::Color::RED
-    red.send(:alpha=, 2)
+    red.send(:alpha=, 75)
 
-    @window.draw_quad(@coordinates[0][:x],
-                      @coordinates[0][:y],
-                      red,
-                      @coordinates[1][:x],
-                      @coordinates[1][:y],
-                      red,
-                      @coordinates[2][:x],
-                      @coordinates[2][:y],
-                      red,
-                      @coordinates[3][:x],
-                      @coordinates[3][:y],
-                      red,
-                      1)
+    Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
+      @window.draw_quad(@home_planet.x_center - WIDTH_UNSELECTED/2, @home_planet.y_center + lane_distance, red,
+                        @home_planet.x_center + WIDTH_UNSELECTED/2, @home_planet.y_center + lane_distance, red,
+                        @home_planet.x_center - WIDTH_UNSELECTED/2, @home_planet.y_center, red,
+                        @home_planet.x_center + WIDTH_UNSELECTED/2, @home_planet.y_center, red,
+                        1)
+    end
 
     @window.draw_line(@home_planet.x_center,
                       @home_planet.y_center,
@@ -72,5 +61,12 @@ class TransferLane
                       @destination_planet.y_center,
                       Gosu::Color::RED,
                       z = 1)
+  end
+
+  def lane_distance
+    @distance ||= Gosu.distance(@home_planet.x_center,
+                                @home_planet.y_center,
+                                @destination_planet.x_center,
+                                @destination_planet.y_center)
   end
 end
