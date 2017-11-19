@@ -17,9 +17,11 @@
 
 ####TODO
 
+- [] Make sample body using Chipmunk
 - [] Make transfer lanes quads (going to have to translate vertices to be orthogonal to direction)
 - [] When hovering transfer lane, make it larger, and change size depending on mouse location
 - [] Make click on transfer lane determine percentage of population transferred
+- [] Refactor ZIndices into a module (one was added)
 - [] Create an indicator of some sort for population relative to max (maybe a circumference line)
 - [] Change fleet animation size depending on population size
 - [] Make fleets not transfer immediately, but when invading/transferring, population grows more slowly or not at all

@@ -3,3 +3,4 @@ ruby '2.4.2'
 
 gem 'gosu'
 gem 'byebug'
+gem 'chipmunk'
