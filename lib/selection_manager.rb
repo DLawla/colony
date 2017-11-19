@@ -2,6 +2,7 @@
 
 require './lib/planet'
 require './lib/fleet'
+require './lib/transfer_lane'
 
 class SelectionManager
   def initialize(window)
@@ -13,8 +14,7 @@ class SelectionManager
   end
 
   def draw
-    draw_transfer_lanes
-    draw_moused_over_transfer_lane
+    #
   end
 
   private
@@ -34,7 +34,7 @@ class SelectionManager
         end
       else
         if planet_moused_over && planet_moused_over.friendly?
-          planet_moused_over.select
+          add_planet_selection planet_moused_over
         else
           remove_planet_selection
         end
@@ -42,23 +42,16 @@ class SelectionManager
     end
   end
 
-  def draw_transfer_lanes
-    # If a planet is selected, and the mouse is hovering over another planet which population can be transferred to,
-    # then draw a couple lines (making a lane), between the two planets
-    planet_source = selected_planet
-    if planet_source = selected_planet
-      transferrable_planets = @window.planets.select { |planet| planet_source.can_transfer_to? planet }
-      transferrable_planets.each do |transferrable_planet|
-        draw_transfer_lane(planet_source.x_center,
-                           planet_source.y_center,
-                           transferrable_planet.x_center,
-                           transferrable_planet.y_center)
-      end
-    end
+  def add_planet_selection planet
+    planet.select
+    create_transfer_lanes_for planet
   end
 
-  def draw_moused_over_transfer_lane
-    # if user is drawing at all over a transfer lane, somehow draw
+  def create_transfer_lanes_for planet_source
+    transferrable_planets = @window.planets.select { |planet| planet_source.can_transfer_to? planet }
+    transferrable_planets.each do |transferrable_planet|
+      @window.add_entities([TransferLane.new(@window, planet_source, transferrable_planet)])
+    end
   end
 
   def selected_planet
@@ -71,27 +64,11 @@ class SelectionManager
 
   def remove_planet_selection
     @window.planets.each(&:unselect)
+    @window.destroy_entities(@window.transfer_lanes)
   end
 
   def assign_planet_selection_to planet
     planet.select
-  end
-
-  def draw_transfer_lane(x1, y1, x2, y2)
-    puts Gosu.angle(x1, y1, x2, y2)
-
-    red = Gosu::Color::RED
-    red.send(:alpha=, 2)
-    @window.draw_quad(100, 100, red, 180, 120, 0xffffffff, 120, 180, 0xffffffff, 200, 200, 0xffffffff, 1)
-
-
-    @window.draw_line(x1,
-                      y1,
-                      Gosu::Color::GREEN,
-                      x2,
-                      y2,
-                      Gosu::Color::RED,
-                      z = 1)
   end
 
   def load_and_send_fleet starting_planet, destination_planet, percentage_leaving

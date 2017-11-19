@@ -85,6 +85,10 @@ class GameWindow < Gosu::Window
     @entities.select { |e| e.is_a? Planet }
   end
 
+  def transfer_lanes
+    @entities.select { |e| e.is_a? TransferLane }
+  end
+
   private
 
   def update_times
