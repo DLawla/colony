@@ -9,7 +9,7 @@ require './lib/selection_manager'
 
 class GameWindow < Gosu::Window
 
-  attr_accessor :entities, :delta, :planets, :mouse
+  attr_accessor :entities, :delta, :planets, :space, :mouse
 
   def initialize
     super(450, 700, false)
@@ -19,19 +19,6 @@ class GameWindow < Gosu::Window
     @dt = (1.0/60.0)
     @space = CP::Space.new
     @body = CP::Body.new(1, 1)
-
-    # Test body
-    # shape_array = [CP::Vec2.new(-25.0, -25.0), CP::Vec2.new(-25.0, 25.0), CP::Vec2.new(25.0, 1.0), CP::Vec2.new(25.0, -1.0)]
-    # @shape = CP::Shape::Poly.new(@body, shape_array, CP::Vec2.new(0,0))
-    # @shape.collision_type = :transfer_lane
-    # @space.add_body(@body)
-    # @space.add_shape(@shape)
-    # @shape.body.p = CP::Vec2.new(200.0, 200.0) # position
-    # @shape.body.v = CP::Vec2.new(0.0, 0.0) # velocity
-    # @shape.body.a = (3*Math::PI/2.0) # angle in radians; faces towards top of screen
-    #
-    # @test_image = Gosu::Image.new("media/selection.png")
-    # @mouse_image = Gosu::Image.new("media/selection.png")
 
     # Mouse body
     initialize_mouse_body
@@ -74,8 +61,6 @@ class GameWindow < Gosu::Window
 
   # Called by Gosu
   def draw
-    #@test_image.draw_rot(@shape.body.p.x, @shape.body.p.y, 10, @shape.body.a.radians_to_gosu)
-
     background_image.draw(0, 0, 0)
 
     @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
@@ -128,7 +113,7 @@ class GameWindow < Gosu::Window
     @space.add_shape(@mouse)
 
     @space.add_collision_func(:transfer_lane, :mouse) do |transfer_lane, mouse|
-      puts 'Mouse over!'
+      transfer_lane.object.mouse_over
     end
   end
 

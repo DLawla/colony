@@ -25,7 +25,9 @@
     - Overlay new, wider quad when selected or planet is moused over up until the location of the mouse 
     - When mouse is pressed on planet or on selected transfer lane, work out the percentage and perform transfer
 - [] Refactor ZIndices into a module (one was added)
-- [] Make faction-owned planet grow in population faster
+- [] If a planet is selected, clicking it should toggle click on/off
+- [] If a planet is selected, clicking a non-transferrable, friendly planet should change selection to that planet
+- [] Make faction-owned planet grow in population faster and start with a boosted population
 - [] Create an indicator of some sort for population relative to max (maybe a circumference line)
         - Could maybe do this with simple triangles? Would look better with arcs or solid circle
 - [] Change fleet animation size depending on population size

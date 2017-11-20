@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
-class TransferLane
-  WIDTH_UNSELECTED = 10
+require './lib/modules/has_shape'
 
+class TransferLane
+  include HasShape
+
+  attr_accessor :shape
+
+  WIDTH_UNSELECTED = 10
+  WIDTH_SELECTED = 30
   COLOR_FRIENDLY = 0x70_00ff00
   COLOR_ENEMY = 0x70_ff0000
   COLOR_TRANSPARENT = 0x00_808080
@@ -12,34 +18,49 @@ class TransferLane
     @home_planet = home_planet
     @destination_planet = destination_planet
 
-    intialize_bearing
+    initialize_bearing
+    initialize_body
   end
 
   def update
     transfer_on_click
-    contains?(@window.mouse_x, @window.mouse_y)
   end
 
   def draw
     draw_lane
   end
 
-  def contains?(x, y)
-    # y = mx + b
-    # y1 = mx1 + b
-    # y2 = mxx2 + b
-    # m = (y1 - b)/x1
-    # => (y2 - b)/x2
-    # y2/x2 = y1x2/x1 - bx2/x1 + b/x2
+  def mouse_over
+    puts 'mouse over!'
   end
 
   private
 
-  def intialize_bearing
+  def initialize_bearing
     @bearing = Gosu.angle(@destination_planet.x_center,
                           @destination_planet.y_center,
                           @home_planet.x_center,
                           @home_planet.y_center)
+  end
+
+  def initialize_body
+    body = CP::Body.new(1, 1)
+    shape_array = [CP::Vec2.new(-WIDTH_SELECTED/2, 0),
+                   CP::Vec2.new(-WIDTH_SELECTED/2, lane_distance),
+                   CP::Vec2.new(WIDTH_SELECTED/2, lane_distance),
+                   CP::Vec2.new(WIDTH_SELECTED/2, 0)]
+    @shape = CP::Shape::Poly.new(body, shape_array, CP::Vec2.new(0, 0))
+    @shape.sensor = true
+    @shape.collision_type = :transfer_lane
+    @window.space.add_body(body)
+    @window.space.add_shape(@shape)
+
+    @shape.body.p = CP::Vec2.new(@home_planet.x_center, @home_planet.y_center) # position
+    @shape.body.v = CP::Vec2.new(0.0, 0.0)
+    # Offset added b/c shape array above is drawn in a coordinate system w/ y postive. Not
+    # sure why the offset below is 90 degrees, however.
+    @shape.body.a = Math::PI/2 + @bearing.gosu_to_radians
+    @shape.object = self
   end
 
   def transfer_on_click
@@ -60,6 +81,8 @@ class TransferLane
                         @home_planet.x_center + WIDTH_UNSELECTED/2, @home_planet.y_center, lane_border_color,
                         1)
     end
+
+    debug_draw_shape(shape)
   end
 
   def lane_distance
