@@ -15,15 +15,10 @@
 - [DONE] Create new objects for transferring populations (ships), which tranfer from planet to planet
    and take time to move (would look cool as trailing lines)
 - [DONE] Make sample body using Chipmunk
-
+- [DONE] Percentage transfer on transfer lanes
 ####TODO
 
-- [] Make transfer lane bodies
-    - Render as quad (at angle...)
-    - Handle deleting them when unselecting
-    - Change status (selected) on mouse over
-    - Overlay new, wider quad when selected or planet is moused over up until the location of the mouse 
-    - When mouse is pressed on planet or on selected transfer lane, work out the percentage and perform transfer
+- [] Refactor transfer lanes to not use body's and shapes, a bit too much overkill
 - [] Refactor ZIndices into a module (one was added)
 - [] If a planet is selected, clicking it should toggle click on/off
 - [] If a planet is selected, clicking a non-transferrable, friendly planet should change selection to that planet
