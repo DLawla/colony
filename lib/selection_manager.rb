@@ -17,6 +17,11 @@ class SelectionManager
     #
   end
 
+  def lane_transfer_selection(transfer_lane, percentage)
+    load_and_send_fleet transfer_lane.home_planet, transfer_lane.destination_planet, percentage
+    remove_planet_selection
+  end
+
   private
 
   def update_planet_selection
@@ -24,11 +29,9 @@ class SelectionManager
       puts 'button down'
 
       if selected_planet
-        if planet_moused_over
-          if selected_planet.can_transfer_to?(planet_moused_over)
-            load_and_send_fleet selected_planet, planet_moused_over, 100
-            remove_planet_selection
-          end
+        if planet_moused_over && selected_planet.can_transfer_to?(planet_moused_over)
+          load_and_send_fleet selected_planet, planet_moused_over, 100
+          remove_planet_selection
         else
           remove_planet_selection
         end
@@ -50,7 +53,7 @@ class SelectionManager
   def create_transfer_lanes_for planet_source
     transferrable_planets = @window.planets.select { |planet| planet_source.can_transfer_to? planet }
     transferrable_planets.each do |transferrable_planet|
-      @window.add_entities([TransferLane.new(@window, planet_source, transferrable_planet)])
+      @window.add_entities([TransferLane.new(@window, self, planet_source, transferrable_planet)])
     end
   end
 

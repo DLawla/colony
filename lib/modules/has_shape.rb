@@ -6,12 +6,14 @@ module HasShape
   end
 
   def debug_draw_shape(shape)
-    Gosu.rotate((shape.body.a * 180/Math::PI), shape.body.pos.x, shape.body.pos.y) do
-      @window.draw_quad(shape.body.pos.x + shape.vert(0).x, shape.body.pos.y + shape.vert(0).y, random_debug_color,
-                        shape.body.pos.x + shape.vert(1).x, shape.body.pos.y + shape.vert(1).y, random_debug_color,
-                        shape.body.pos.x + shape.vert(2).x, shape.body.pos.y + shape.vert(2).y, random_debug_color,
-                        shape.body.pos.x + shape.vert(3).x, shape.body.pos.y + shape.vert(3).y, random_debug_color,
-                        1)
+    if @window.debug
+      Gosu.rotate((shape.body.a * 180/Math::PI), shape.body.pos.x, shape.body.pos.y) do
+        @window.draw_quad(shape.body.pos.x + shape.vert(0).x, shape.body.pos.y + shape.vert(0).y, random_debug_color,
+                          shape.body.pos.x + shape.vert(1).x, shape.body.pos.y + shape.vert(1).y, random_debug_color,
+                          shape.body.pos.x + shape.vert(2).x, shape.body.pos.y + shape.vert(2).y, random_debug_color,
+                          shape.body.pos.x + shape.vert(3).x, shape.body.pos.y + shape.vert(3).y, random_debug_color,
+                          1)
+      end
     end
   end
 

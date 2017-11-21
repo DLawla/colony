@@ -9,11 +9,13 @@ require './lib/selection_manager'
 
 class GameWindow < Gosu::Window
 
-  attr_accessor :entities, :delta, :planets, :space, :mouse
+  attr_accessor :debug, :entities, :delta, :space, :mouse
 
   def initialize
     super(450, 700, false)
     self.caption = 'Colony'
+
+    @debug = true
 
     # Chimpmunk setup
     @dt = (1.0/60.0)
@@ -90,7 +92,13 @@ class GameWindow < Gosu::Window
   end
 
   def destroy_entities(entities_array)
+    entities_array.each { |entity| entity.teardown }
     @entities -= entities_array
+  end
+
+  def remove_body_and_shape(shape)
+    @space.remove_body(shape.body)
+    @space.remove_shape(shape)
   end
 
   def planets
@@ -111,6 +119,10 @@ class GameWindow < Gosu::Window
     @mouse.collision_type = :mouse
     @space.add_body(body)
     @space.add_shape(@mouse)
+
+    @space.add_collision_func(:transfer_lane, :mouse) do |transfer_lane, mouse|
+      transfer_lane.object.mouse_over
+    end
 
     @space.add_collision_func(:transfer_lane, :mouse) do |transfer_lane, mouse|
       transfer_lane.object.mouse_over
