@@ -24,6 +24,7 @@ class TransferLane
     @selected = false
 
     initialize_bearing
+    initialize_selection_vertices
   end
 
   def update
@@ -34,7 +35,8 @@ class TransferLane
     draw_lane
   end
 
-  def within?
+  def within?(x, y)
+    # within selectable region of transfer lane
     # should include within lane and both of its planets
   end
 
@@ -71,6 +73,19 @@ class TransferLane
                           @home_planet.y_center)
   end
 
+  def initialize_selection_vertices
+    @selection_vertices = [
+        {x: @home_planet.x_center + Gosu.offset_x(@bearing - 90, WIDTH_SELECTED/2),
+         y: @home_planet.y_center + Gosu.offset_y(@bearing - 90, WIDTH_SELECTED/2)},
+        {x: @destination_planet.x_center + Gosu.offset_x(@bearing - 90, WIDTH_SELECTED/2),
+         y: @destination_planet.y_center + Gosu.offset_y(@bearing - 90, WIDTH_SELECTED/2)},
+        {x: @destination_planet.x_center + Gosu.offset_x(@bearing + 90, WIDTH_SELECTED/2),
+         y: @destination_planet.y_center + Gosu.offset_y(@bearing + 90, WIDTH_SELECTED/2)},
+        {x: @home_planet.x_center + Gosu.offset_x(@bearing + 90, WIDTH_SELECTED/2),
+         y: @home_planet.y_center + Gosu.offset_y(@bearing + 90, WIDTH_SELECTED/2)},
+    ]
+  end
+
   def draw_lane
     Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
       # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
@@ -87,19 +102,17 @@ class TransferLane
     end
 
     if selected?
-      Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
-        # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
-        $window.draw_quad(@home_planet.x_center - WIDTH_SELECTED/2, @home_planet.y_center + lane_distance, lane_border_color,
-                          @home_planet.x_center, @home_planet.y_center + lane_distance, COLOR_SELECTED,
-                          @home_planet.x_center - WIDTH_SELECTED/2, @home_planet.y_center, lane_border_color,
-                          @home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
-                          1)
-        $window.draw_quad(@home_planet.x_center, @home_planet.y_center + lane_distance, COLOR_SELECTED,
-                          @home_planet.x_center + WIDTH_SELECTED/2, @home_planet.y_center + lane_distance, lane_border_color,
-                          @home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
-                          @home_planet.x_center + WIDTH_SELECTED/2, @home_planet.y_center, lane_border_color,
-                          1)
-      end
+      # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
+      $window.draw_quad(@selection_vertices[0][:x], @selection_vertices[0][:y], lane_border_color,
+                        @selection_vertices[1][:x], @selection_vertices[1][:y], lane_border_color,
+                        @destination_planet.x_center, @destination_planet.y_center, COLOR_SELECTED,
+                        @home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
+                        1)
+      $window.draw_quad(@home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
+                        @destination_planet.x_center, @destination_planet.y_center, COLOR_SELECTED,
+                        @selection_vertices[2][:x], @selection_vertices[2][:y], lane_border_color,
+                        @selection_vertices[3][:x], @selection_vertices[3][:y], lane_border_color,
+                        1)
 
       # draw quad @ rough location of where mouse is hover over
       Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
