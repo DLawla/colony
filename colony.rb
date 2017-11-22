@@ -8,7 +8,8 @@ require './lib/selection_manager'
 
 class GameWindow < Gosu::Window
 
-  attr_accessor :debug, :entities, :delta
+  attr_accessor :entities
+  attr_reader :debug, :delta, :elapsed_time
 
   def initialize
     super(450, 700, false)
@@ -37,6 +38,7 @@ class GameWindow < Gosu::Window
 
     # Button one shots
     @lm_previous = false
+    @space_previous = false
   end
 
   def needs_cursor?
@@ -70,6 +72,8 @@ class GameWindow < Gosu::Window
     # Add more conditions as needed
       when Gosu::MsLeft
         button_down?(id) && !@lm_previous
+      when Gosu::KB_SPACE
+        button_down?(id) && !@space_previous
     else
       button_down?(id)
     end
@@ -108,6 +112,7 @@ class GameWindow < Gosu::Window
 
   def update_previous_button_downs
     @lm_previous = button_down? Gosu::MsLeft
+    @space_previous = button_down? Gosu::KB_SPACE
   end
 
   def background_image

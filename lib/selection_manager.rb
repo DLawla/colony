@@ -47,6 +47,8 @@ class SelectionManager
   end
 
   def update_transfer_lane_selection
+    $window.transfer_lanes.select { |transfer_lane| transfer_lane.within?($window.mouse_x, $window.mouse_y) }.first
+
     # selected_transfer_lane = TransferLane.selected
     # if mouse is outside all transfer lanes, unselect it
     # TransferLane.unselect_all_lanes

@@ -23,6 +23,8 @@ class TransferLane
 
     @selected = false
 
+    @id = rand(0..1000)
+
     initialize_bearing
     initialize_selection_vertices
   end
@@ -36,8 +38,35 @@ class TransferLane
   end
 
   def within?(x, y)
-    # within selectable region of transfer lane
-    # should include within lane and both of its planets
+    # if a horizontal line starting from this point is cast in any direction (here using y constant line):
+    # and has the following number of intersections w/ selection box boundary:
+    #   0: it is not within
+    #   odd number: it is within
+    #   even number: is not within
+
+    # count intersection of horizontal line starting from point w/ selection box
+    intersections = 0
+    number_of_vertices = @selection_vertices.length
+
+    if $window.button_down_one_shot? Gosu::KB_SPACE
+      byebug
+    end
+
+    @selection_vertices.each_with_index do |vertex, i|
+      next_vertex = @selection_vertices[(i + 1)%number_of_vertices]
+      x_intersection = x_on_line_from_points_at(y, vertex[:x], vertex[:y], next_vertex[:x], next_vertex[:y])
+
+      # check:
+      # 1) smallest given x < x_intersection
+      # 2) given y is between the vertices
+      if (x < x_intersection) && (y.between?(vertex[:y], next_vertex[:y]) || y.between?(next_vertex[:y], vertex[:y]))
+        intersections += 1
+      end
+    end
+
+    if !intersections.zero? && intersections.odd?
+      puts "mouse over TL #{@id} @ #{$window.elapsed_time}"
+    end
   end
 
   def self.selected
@@ -101,18 +130,18 @@ class TransferLane
                         1)
     end
 
-    if selected?
+    if selected? || true
       # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
       $window.draw_quad(@selection_vertices[0][:x], @selection_vertices[0][:y], lane_border_color,
                         @selection_vertices[1][:x], @selection_vertices[1][:y], lane_border_color,
                         @destination_planet.x_center, @destination_planet.y_center, COLOR_SELECTED,
                         @home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
-                        1)
+                        10)
       $window.draw_quad(@home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
                         @destination_planet.x_center, @destination_planet.y_center, COLOR_SELECTED,
                         @selection_vertices[2][:x], @selection_vertices[2][:y], lane_border_color,
                         @selection_vertices[3][:x], @selection_vertices[3][:y], lane_border_color,
-                        1)
+                        10)
 
       # draw quad @ rough location of where mouse is hover over
       Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
@@ -156,5 +185,12 @@ class TransferLane
 
   def lane_border_color
     COLOR_TRANSPARENT
+  end
+
+  def x_on_line_from_points_at(y, x_1, y_1, x_2, y_2)
+    # y = mx + b = > x = (y-b)/m
+    m = (y_1 - y_2) / (x_1 - x_2)
+    b = y_1 - (m * x_1 )
+    (y - b)/m
   end
 end
