@@ -70,7 +70,9 @@ class TransferLane
   end
 
   def self.selected
-    $window.transfer_lanes.select(&:selected?).first
+    $window.transfer_lanes.select(&:selected?)
+    selected_lanes = $window.transfer_lanes.select(&:selected?)
+    return selected_lanes.first if selected_lanes
   end
 
   def self.unselect_all
@@ -130,7 +132,7 @@ class TransferLane
                         1)
     end
 
-    if selected? || true
+    if selected?
       # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
       $window.draw_quad(@selection_vertices[0][:x], @selection_vertices[0][:y], lane_border_color,
                         @selection_vertices[1][:x], @selection_vertices[1][:y], lane_border_color,

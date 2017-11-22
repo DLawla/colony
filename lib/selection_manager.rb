@@ -47,11 +47,23 @@ class SelectionManager
   end
 
   def update_transfer_lane_selection
-    $window.transfer_lanes.select { |transfer_lane| transfer_lane.within?($window.mouse_x, $window.mouse_y) }.first
-
-    # selected_transfer_lane = TransferLane.selected
-    # if mouse is outside all transfer lanes, unselect it
-    # TransferLane.unselect_all_lanes
+    #selected_transfer_lane = TransferLane.selected
+    # if $window.transfer_lanes.any?
+    #   moused_over_transfer_lanes = $window.transfer_lanes.select do |transfer_lane|
+    #     transfer_lane.within?($window.mouse_x, $window.mouse_y)
+    #   end
+    # else
+    #   moused_over_transfer_lanes = []
+    # end
+    #
+    # # if mouse is outside all transfer lanes, unselect
+    # if moused_over_transfer_lanes.any?
+    #   TransferLane.unselect_all_lanes
+    # elsif selected_transfer_lane && (moused_over_transfer_lanes.include? selected_transfer_lane)
+    #   # support for switching selected transfer lane goes here...
+    # else
+    #   moused_over_transfer_lanes.first.select
+    # end
 
     # if planet is selected & the selected planets don't contain the selected planet, change selection
 
