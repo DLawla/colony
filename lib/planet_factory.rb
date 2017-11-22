@@ -3,12 +3,10 @@
 require './lib/planet'
 
 class PlanetFactory
-  def initialize(window)
-    @window = window
-
+  def initialize
     planets = build_planets
 
-    @window.add_entities(planets)
+    $window.add_entities(planets)
   end
 
   private
@@ -21,8 +19,7 @@ class PlanetFactory
                 elsif i == coordinates.length - 1
                   :friendly
                 end
-      Planet.new(@window,
-                 x_center: coordinate[:x],
+      Planet.new(x_center: coordinate[:x],
                  y_center: coordinate[:y],
                  row: coordinate[:row],
                  faction: faction,
@@ -42,10 +39,10 @@ class PlanetFactory
     row_cell_map = row_count.times.map{ |i| rand(2..3)}
 
     coordinates = []
-    cell_height = @window.height/row_cell_map.length
+    cell_height = $window.height/row_cell_map.length
 
     row_cell_map.each_with_index do |number_of_row_cells, i|
-      cell_width = @window.width/number_of_row_cells
+      cell_width = $window.width/number_of_row_cells
 
       number_of_row_cells.times do |j|
         # random location in cell bounded by the cell height/width and the max planet size

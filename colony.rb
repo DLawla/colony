@@ -14,6 +14,11 @@ class GameWindow < Gosu::Window
     super(450, 700, false)
     self.caption = 'Colony'
 
+    # Yes, it's a global. But it is a justifying use-case. Otherwise, would need to be passed
+    # around to every class initialization, which means it is basically a global already. Therefor,
+    # calling it as a global to simplify.
+    $window = self
+
     @debug = true
 
     # Time variables
@@ -27,13 +32,11 @@ class GameWindow < Gosu::Window
 
     # Load entities
     @entities = []
-    PlanetFactory.new(self)
-    add_entities([SelectionManager.new(self)])
+    PlanetFactory.new
+    add_entities([SelectionManager.new])
 
     # Button one shots
     @lm_previous = false
-
-    $window = self
   end
 
   def needs_cursor?

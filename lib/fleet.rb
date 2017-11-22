@@ -7,8 +7,7 @@ class Fleet
 
   BASE_IMAGE_SIZE = 50
 
-  def initialize(window, home_planet, destination_planet, population)
-    @window = window
+  def initialize(home_planet, destination_planet, population)
     @home_planet = home_planet
     @destination_planet = destination_planet
     @population = population
@@ -60,14 +59,14 @@ class Fleet
   end
 
   def disembark_if_arrived
-    if @destination_planet.within_planet? @x, @y
+    if @destination_planet.within? @x, @y
       disembark_population
-      @window.destroy_entities([self])
+      $window.destroy_entities([self])
     end
   end
 
   def travelled_distance
-    @window.delta * @velocity
+    $window.delta * @velocity
   end
 
   def image_offset

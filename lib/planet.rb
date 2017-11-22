@@ -14,8 +14,7 @@ class Planet
   MAX_PLANET_SIZE = 90
   DEFAULT_PLANET_SIZE = 90
 
-  def initialize(window, args = {})
-    @window = window
+  def initialize(args = {})
     @selected = false
 
     if args[:random] && args[:random] == true
@@ -49,7 +48,7 @@ class Planet
     selection_image_offset
 
     @selection_diameter = @width + 10
-    @population_font = Gosu::Font.new(@window, 'Courier', 15)
+    @population_font = Gosu::Font.new($window, 'Courier', 15)
   end
 
   def update
@@ -112,7 +111,7 @@ class Planet
                            0,
                            @selection_image_ratio,
                            @selection_image_ratio,
-                           @window.oscillating_color(Gosu::Color::GREEN)
+                           $window.oscillating_color(Gosu::Color::GREEN)
       )
     elsif @selected
       selection_image.draw(@x + selection_image_offset,
