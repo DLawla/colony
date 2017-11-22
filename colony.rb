@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'gosu'
-require 'chipmunk'
 require 'byebug'
 
 require './lib/planet_factory'
@@ -9,21 +8,13 @@ require './lib/selection_manager'
 
 class GameWindow < Gosu::Window
 
-  attr_accessor :debug, :entities, :delta, :space, :mouse
+  attr_accessor :debug, :entities, :delta
 
   def initialize
     super(450, 700, false)
     self.caption = 'Colony'
 
     @debug = true
-
-    # Chimpmunk setup
-    @dt = (1.0/60.0)
-    @space = CP::Space.new
-    @body = CP::Body.new(1, 1)
-
-    # Mouse body
-    initialize_mouse_body
 
     # Time variables
     @elapsed_time = 0
@@ -41,6 +32,8 @@ class GameWindow < Gosu::Window
 
     # Button one shots
     @lm_previous = false
+
+    $window = self
   end
 
   def needs_cursor?
@@ -49,7 +42,6 @@ class GameWindow < Gosu::Window
 
   # Called by Gosu
   def update
-    update_mouse
     update_times
 
     @entities.each do |entity|
@@ -57,8 +49,6 @@ class GameWindow < Gosu::Window
     end
 
     update_previous_button_downs
-
-    @space.step(@dt)
   end
 
   # Called by Gosu
@@ -92,13 +82,7 @@ class GameWindow < Gosu::Window
   end
 
   def destroy_entities(entities_array)
-    entities_array.each { |entity| entity.teardown }
     @entities -= entities_array
-  end
-
-  def remove_body_and_shape(shape)
-    @space.remove_body(shape.body)
-    @space.remove_shape(shape)
   end
 
   def planets
@@ -111,34 +95,12 @@ class GameWindow < Gosu::Window
 
   private
 
-  def initialize_mouse_body
-    body = CP::Body.new(1, 1)
-    shape_array = [CP::Vec2.new(-5, -5.0), CP::Vec2.new(-5.0, 5.0), CP::Vec2.new(5.0, 5.0), CP::Vec2.new(5.0, -5.0)]
-    @mouse = CP::Shape::Poly.new(body, shape_array, CP::Vec2.new(0,0))
-    @mouse.sensor = true
-    @mouse.collision_type = :mouse
-    @space.add_body(body)
-    @space.add_shape(@mouse)
-
-    @space.add_collision_func(:transfer_lane, :mouse) do |transfer_lane, mouse|
-      transfer_lane.object.mouse_over
-    end
-
-    @space.add_collision_func(:transfer_lane, :mouse) do |transfer_lane, mouse|
-      transfer_lane.object.mouse_over
-    end
-  end
-
   def update_times
     current_time = Gosu::milliseconds / 1000.0
     @delta = [current_time - @last_time, 0.25].min
     @last_time = current_time
 
     @elapsed_time += @delta
-  end
-
-  def update_mouse
-    @mouse.body.p = CP::Vec2.new(mouse_x, mouse_y)
   end
 
   def update_previous_button_downs

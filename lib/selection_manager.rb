@@ -11,6 +11,7 @@ class SelectionManager
 
   def update
     update_planet_selection
+    update_transfer_lane_selection
   end
 
   def draw
@@ -45,6 +46,20 @@ class SelectionManager
     end
   end
 
+  def update_transfer_lane_selection
+    # selected_transfer_lane = TransferLane.selected
+    # if mouse is outside all transfer lanes, unselect it
+    # TransferLane.unselect_all_lanes
+
+    # if planet is selected & the selected planets don't contain the selected planet, change selection
+
+    # if moused-over, and button click, perform selection
+      # Do selection
+      # if @window.button_down_one_shot?(Gosu::MsLeft) && selected?
+      #   @selection_manager.lane_transfer_selection(self, percentage_selected)
+      # end
+  end
+
   def add_planet_selection planet
     planet.select
     create_transfer_lanes_for planet
@@ -53,7 +68,7 @@ class SelectionManager
   def create_transfer_lanes_for planet_source
     transferrable_planets = @window.planets.select { |planet| planet_source.can_transfer_to? planet }
     transferrable_planets.each do |transferrable_planet|
-      @window.add_entities([TransferLane.new(@window, self, planet_source, transferrable_planet)])
+      @window.add_entities([TransferLane.new(self, planet_source, transferrable_planet)])
     end
   end
 
@@ -62,7 +77,7 @@ class SelectionManager
   end
 
   def planet_moused_over
-    @window.planets.select { |planet| planet.within_planet?(@window.mouse_x, @window.mouse_y) }.first
+    @window.planets.select { |planet| planet.within?(@window.mouse_x, @window.mouse_y) }.first
   end
 
   def remove_planet_selection

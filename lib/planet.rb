@@ -63,7 +63,7 @@ class Planet
     draw_population
   end
 
-  def within_planet?(x, y)
+  def within?(x, y)
     x.between?(@x, @x + @width) && y.between?(@y, @y + @width)
   end
 

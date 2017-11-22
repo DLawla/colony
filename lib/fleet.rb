@@ -23,10 +23,6 @@ class Fleet
     calculate_bearing
   end
 
-  def teardown
-    #
-  end
-
   def update
     update_position
     disembark_if_arrived

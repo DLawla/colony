@@ -19,6 +19,7 @@
 ####TODO
 
 - [] Refactor transfer lanes to not use body's and shapes, a bit too much overkill
+- [] If two transfer lanes are hovered-over, make space bar switch between them
 - [] Refactor ZIndices into a module (one was added)
 - [] If a planet is selected, clicking it should toggle click on/off
 - [] If a planet is selected, clicking a non-transferrable, friendly planet should change selection to that planet
