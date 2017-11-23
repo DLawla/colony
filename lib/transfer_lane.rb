@@ -6,6 +6,7 @@ class TransferLane
   include HasShape
 
   attr_accessor :home_planet, :destination_planet
+  attr_reader :id
 
   WIDTH_UNSELECTED = 10
   WIDTH_SELECTED = 30
@@ -48,10 +49,6 @@ class TransferLane
     intersections = 0
     number_of_vertices = @selection_vertices.length
 
-    if $window.button_down_one_shot? Gosu::KB_SPACE
-      byebug
-    end
-
     @selection_vertices.each_with_index do |vertex, i|
       next_vertex = @selection_vertices[(i + 1)%number_of_vertices]
       x_intersection = x_on_line_from_points_at(y, vertex[:x], vertex[:y], next_vertex[:x], next_vertex[:y])
@@ -64,9 +61,7 @@ class TransferLane
       end
     end
 
-    if !intersections.zero? && intersections.odd?
-      puts "mouse over TL #{@id} @ #{$window.elapsed_time}"
-    end
+    !intersections.zero? && intersections.odd?
   end
 
   def self.selected
