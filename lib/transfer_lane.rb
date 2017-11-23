@@ -13,8 +13,6 @@ class TransferLane
   HEIGHT_SELECTED_TICK = 10
   COLOR_FRIENDLY = 0x70_00ff00
   COLOR_ENEMY = 0x70_ff0000
-  COLOR_SELECTED = 0x70_0000ff
-  COLOR_SELECTED_TICK = 0x70_ff00ff
   COLOR_TRANSPARENT = 0x00_808080
 
   def initialize(selection_manager, home_planet, destination_planet)
@@ -113,6 +111,7 @@ class TransferLane
   end
 
   def draw_lane
+    # Draw thin transfer lane quad
     Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
       # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
       $window.draw_quad(@home_planet.x_center - WIDTH_UNSELECTED/2, @home_planet.y_center + lane_distance, lane_border_color,
@@ -127,26 +126,27 @@ class TransferLane
                         1)
     end
 
+    # Draw wider transfer lane quad, denoting the selection
     if selected?
       # drawing two touching quads, so can blend colors such that is transparent on the sides, and solid in the middle
       $window.draw_quad(@selection_vertices[0][:x], @selection_vertices[0][:y], lane_border_color,
                         @selection_vertices[1][:x], @selection_vertices[1][:y], lane_border_color,
-                        @destination_planet.x_center, @destination_planet.y_center, COLOR_SELECTED,
-                        @home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
-                        10)
-      $window.draw_quad(@home_planet.x_center, @home_planet.y_center, COLOR_SELECTED,
-                        @destination_planet.x_center, @destination_planet.y_center, COLOR_SELECTED,
+                        @destination_planet.x_center, @destination_planet.y_center, lane_color,
+                        @home_planet.x_center, @home_planet.y_center, lane_color,
+                        1)
+      $window.draw_quad(@home_planet.x_center, @home_planet.y_center, lane_color,
+                        @destination_planet.x_center, @destination_planet.y_center, lane_color,
                         @selection_vertices[2][:x], @selection_vertices[2][:y], lane_border_color,
                         @selection_vertices[3][:x], @selection_vertices[3][:y], lane_border_color,
-                        10)
+                        1)
 
       # draw quad @ rough location of where mouse is hover over
       Gosu.rotate(@bearing, @home_planet.x_center, @home_planet.y_center) do
         Gosu.translate(0, mouse_distance_from_home) do
-          $window.draw_quad(@home_planet.x_center - WIDTH_SELECTED/2, @home_planet.y_center - HEIGHT_SELECTED_TICK/2, COLOR_SELECTED_TICK,
-                            @home_planet.x_center - WIDTH_SELECTED/2, @home_planet.y_center + HEIGHT_SELECTED_TICK/2, COLOR_SELECTED_TICK,
-                            @home_planet.x_center + WIDTH_SELECTED/2, @home_planet.y_center + HEIGHT_SELECTED_TICK/2, COLOR_SELECTED_TICK,
-                            @home_planet.x_center + WIDTH_SELECTED/2, @home_planet.y_center - HEIGHT_SELECTED_TICK/2, COLOR_SELECTED_TICK,
+          $window.draw_quad(@home_planet.x_center - WIDTH_SELECTED/2, @home_planet.y_center - HEIGHT_SELECTED_TICK/2, lane_color,
+                            @home_planet.x_center - WIDTH_SELECTED/2, @home_planet.y_center + HEIGHT_SELECTED_TICK/2, lane_color,
+                            @home_planet.x_center + WIDTH_SELECTED/2, @home_planet.y_center + HEIGHT_SELECTED_TICK/2, lane_color,
+                            @home_planet.x_center + WIDTH_SELECTED/2, @home_planet.y_center - HEIGHT_SELECTED_TICK/2, lane_color,
                             1)
         end
       end

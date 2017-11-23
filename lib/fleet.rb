@@ -79,6 +79,7 @@ class Fleet
     else
       resolve_combat
     end
+    @destination_planet.receive_population
   end
 
   def resolve_combat

@@ -6,17 +6,12 @@ require './lib/transfer_lane'
 
 class SelectionManager
   def initialize
-    #
   end
 
   def update
-    init_selections
-
-    update_planet_selection
-    update_transfer_lane_selection
-    launch_fleets
-
-    remove_selections
+    transfer_lane_selection
+    planet_hover_over
+    planet_and_fleet_selection
   end
 
   def draw
@@ -25,32 +20,9 @@ class SelectionManager
 
   private
 
-  def init_selections
-    @remove_selected = false
-  end
+  def transfer_lane_selection
+    # On hover over transfer lanes, change which is selected
 
-  def update_planet_selection
-    if $window.button_down_one_shot? Gosu::MsLeft
-      puts 'button down'
-
-      if selected_planet
-        if planet_moused_over && selected_planet.can_transfer_to?(planet_moused_over)
-          load_and_send_fleet selected_planet, planet_moused_over, 100
-          queue_selection_removal
-        else
-          queue_selection_removal
-        end
-      else
-        if planet_moused_over && planet_moused_over.friendly?
-          add_planet_selection planet_moused_over
-        else
-          queue_selection_removal
-        end
-      end
-    end
-  end
-
-  def update_transfer_lane_selection
     selected_transfer_lane = TransferLane.selected
     pending_selection_transfer_lanes = moused_over_transfer_lanes
 
@@ -59,30 +31,54 @@ class SelectionManager
     elsif selected_transfer_lane && (moused_over_transfer_lanes.include? selected_transfer_lane)
       # support for switching selected transfer lane goes here...
     else
+      TransferLane.unselect_all
       moused_over_transfer_lanes.first.select
     end
   end
 
-  def launch_fleets
-    selected_transfer_lane = TransferLane.selected
-    pending_selection_transfer_lanes = moused_over_transfer_lanes
-
-    if selected_transfer_lane && $window.button_down_one_shot?(Gosu::MsLeft)
-      if selected_transfer_lane.within?($window.mouse_x, $window.mouse_y)
-        load_and_send_fleet selected_transfer_lane.home_planet,
-                            selected_transfer_lane.destination_planet,
-                            selected_transfer_lane.percentage_selected
-        queue_selection_removal
+  def planet_hover_over
+    if selected_planet
+      if planet_moused_over && selected_planet.can_transfer_to?(planet_moused_over)
+        planet_moused_over.hovered_over
+      end
+    else
+      if planet_moused_over && planet_moused_over.friendly?
+        planet_moused_over.hovered_over
       end
     end
   end
 
-  def queue_selection_removal
-    @remove_selected = true
+  def planet_and_fleet_selection
+    # Manage planet & transfer lane selection/unselection and launching fleets
+    if $window.button_down_one_shot? Gosu::MsLeft
+      puts 'button down'
+
+      selected_transfer_lane = TransferLane.selected
+
+      if selected_planet
+        if planet_moused_over && selected_planet.can_transfer_to?(planet_moused_over)
+          load_and_send_fleet selected_planet, planet_moused_over, 100
+          remove_planet_selection
+        elsif selected_transfer_lane && selected_transfer_lane.within?($window.mouse_x, $window.mouse_y)
+          load_and_send_fleet selected_transfer_lane.home_planet,
+                              selected_transfer_lane.destination_planet,
+                              selected_transfer_lane.percentage_selected
+          remove_planet_selection
+        else
+          remove_planet_selection
+        end
+      else
+        if planet_moused_over && planet_moused_over.friendly?
+          add_planet_selection planet_moused_over
+        else
+          remove_planet_selection
+        end
+      end
+    end
   end
 
   def remove_selections
-    remove_planet_selection if @remove_selected
+    remove_planet_selection
   end
 
   def add_planet_selection planet
@@ -127,5 +123,6 @@ class SelectionManager
 
     $window.add_entities([Fleet.new(starting_planet, destination_planet, transfering_population)])
     starting_planet.population -= transfering_population
+    destination_planet.fleet_inbound
   end
 end

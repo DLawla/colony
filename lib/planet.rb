@@ -52,6 +52,7 @@ class Planet
   end
 
   def update
+    remove_hovered_over
     update_status
     update_population
   end
@@ -78,16 +79,36 @@ class Planet
     @selected = false
   end
 
+  def hovered_over
+    @hovered_over = true
+  end
+
+  def remove_hovered_over
+    @hovered_over = false
+  end
+
+  def hovered_over?
+    @hovered_over
+  end
+
   def receive_population
-    @receiving_started_at = Time.now
+    start_animation
   end
 
-  def finish_receiving_population
-    @receiving_started_at = nil
+  def fleet_inbound
+    start_animation
   end
 
-  def receiving_population?
-    @receiving_started_at
+  def start_animation
+    @animating_started_at = Time.now
+  end
+
+  def finish_animating
+    @animating_started_at = nil
+  end
+
+  def animate_planet?
+    @animating_started_at
   end
 
   def can_transfer_to?(other_planet)
@@ -105,7 +126,15 @@ class Planet
   end
 
   def draw_selection_image
-    if receiving_population?
+    if animate_planet?
+      selection_image.draw(@x + selection_image_offset,
+                           @y + selection_image_offset,
+                           0,
+                           @selection_image_ratio,
+                           @selection_image_ratio,
+                           $window.oscillating_color(Gosu::Color::GREEN)
+      )
+    elsif hovered_over?
       selection_image.draw(@x + selection_image_offset,
                            @y + selection_image_offset,
                            0,
@@ -134,8 +163,8 @@ class Planet
   end
 
   def update_status
-    if receiving_population?
-      finish_receiving_population if (Time.now - @receiving_started_at > 0.5)
+    if animate_planet?
+      finish_animating if (Time.now - @animating_started_at > 0.5)
     end
   end
 
