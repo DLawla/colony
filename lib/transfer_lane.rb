@@ -11,9 +11,6 @@ class TransferLane
   WIDTH_UNSELECTED = 10
   WIDTH_SELECTED = 30
   HEIGHT_SELECTED_TICK = 10
-  COLOR_FRIENDLY = 0x70_00ff00
-  COLOR_ENEMY = 0x70_ff0000
-  COLOR_TRANSPARENT = 0x00_808080
 
   def initialize(selection_manager, home_planet, destination_planet)
     @selection_manager = selection_manager
@@ -58,7 +55,7 @@ class TransferLane
         intersections += 1
       end
     end
-
+    puts intersections
     !intersections.zero? && intersections.odd?
   end
 
@@ -177,14 +174,17 @@ class TransferLane
   end
 
   def lane_color
-    @lane_color ||= @home_planet.faction == @destination_planet.faction ? COLOR_FRIENDLY : COLOR_ENEMY
+    @lane_color ||= @home_planet.faction == @destination_planet.faction ? Colony::COLOR_FRIENDLY : Colony::COLOR_ENEMY
   end
 
   def lane_border_color
-    COLOR_TRANSPARENT
+    Colony::COLOR_TRANSPARENT
   end
 
   def x_on_line_from_points_at(y, x_1, y_1, x_2, y_2)
+    # if x's are equal, then vertical line, so return any x
+    return x_1 if x_1 == x_2
+
     # y = mx + b = > x = (y-b)/m
     m = (y_1 - y_2) / (x_1 - x_2)
     b = y_1 - (m * x_1 )

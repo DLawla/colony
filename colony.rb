@@ -6,10 +6,15 @@ require 'byebug'
 require './lib/planet_factory'
 require './lib/selection_manager'
 
-class GameWindow < Gosu::Window
+class Colony < Gosu::Window
 
   attr_accessor :entities
   attr_reader :debug, :delta, :elapsed_time
+
+  COLOR_FRIENDLY = 0x70_00ff00
+  COLOR_ENEMY = 0x70_ff0000
+  COLOR_NEUTRAL = 0x70_ffff00
+  COLOR_TRANSPARENT = 0x00_808080
 
   def initialize
     super(450, 700, false)
@@ -80,6 +85,7 @@ class GameWindow < Gosu::Window
   end
 
   def oscillating_color(base_color, oscillation_scale = 150)
+    puts base_color.gl
     result = base_color.gl + Math::acos(@elapsed_time%1 ) * oscillation_scale
     result.to_i
   end
@@ -124,5 +130,5 @@ class GameWindow < Gosu::Window
   end
 end
 
-window = GameWindow.new
+window = Colony.new
 window.show

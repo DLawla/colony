@@ -132,7 +132,8 @@ class Planet
                            0,
                            @selection_image_ratio,
                            @selection_image_ratio,
-                           $window.oscillating_color(Gosu::Color::GREEN)
+                           faction_color
+                           #$window.oscillating_color(Gosu::Color::YELLOW)
       )
     elsif hovered_over?
       selection_image.draw(@x + selection_image_offset,
@@ -140,7 +141,7 @@ class Planet
                            0,
                            @selection_image_ratio,
                            @selection_image_ratio,
-                           $window.oscillating_color(Gosu::Color::GREEN)
+                           faction_color
       )
     elsif @selected
       selection_image.draw(@x + selection_image_offset,
@@ -177,5 +178,11 @@ class Planet
   def selection_image_offset
     @selection_image_offset ||= ((BASE_IMAGE_SIZE * @image_image_ratio) -
         (BASE_SELECTION_SIZE * @selection_image_ratio)) * 0.5
+  end
+
+  def faction_color
+    return Gosu::Color::GREEN if friendly?
+    return Gosu::Color::RED  if enemy?
+    Gosu::Color::YELLOW
   end
 end
