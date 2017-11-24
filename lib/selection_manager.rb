@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require './lib/planet'
-require './lib/fleet'
+require './lib/fleet_traffic_control'
 require './lib/transfer_lane'
 
 class SelectionManager
@@ -57,12 +57,12 @@ class SelectionManager
 
       if selected_planet
         if planet_moused_over && selected_planet.can_transfer_to?(planet_moused_over)
-          load_and_send_fleet selected_planet, planet_moused_over, 100
+          FleetTrafficControl.new.send_fleet selected_planet, planet_moused_over, 100
           remove_planet_selection
         elsif selected_transfer_lane && selected_transfer_lane.within?($window.mouse_x, $window.mouse_y)
-          load_and_send_fleet selected_transfer_lane.home_planet,
-                              selected_transfer_lane.destination_planet,
-                              selected_transfer_lane.percentage_selected
+          FleetTrafficControl.new.send_fleet selected_transfer_lane.home_planet,
+                                             selected_transfer_lane.destination_planet,
+                                             selected_transfer_lane.percentage_selected
           remove_planet_selection
         else
           remove_planet_selection
@@ -114,15 +114,5 @@ class SelectionManager
 
   def assign_planet_selection_to planet
     planet.select
-  end
-
-  def load_and_send_fleet starting_planet, destination_planet, percentage_leaving
-    percentage_leaving = percentage_leaving.clamp(1, 100)
-    transfering_population = starting_planet.population * (percentage_leaving/100)
-    transfering_population = [starting_planet.population - 10, transfering_population].min
-
-    $window.add_entities([Fleet.new(starting_planet, destination_planet, transfering_population)])
-    starting_planet.population -= transfering_population
-    destination_planet.fleet_inbound
   end
 end

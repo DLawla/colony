@@ -55,7 +55,7 @@ class TransferLane
         intersections += 1
       end
     end
-    puts intersections
+
     !intersections.zero? && intersections.odd?
   end
 
