@@ -3,14 +3,15 @@
 require 'gosu'
 require 'byebug'
 
+require './lib/modules/has_state'
 require './lib/planet_factory'
 require './lib/selection_manager'
 
 class Colony < Gosu::Window
+  include HasState
 
   attr_accessor :entities
   attr_reader :debug, :delta, :elapsed_time
-
   COLOR_FRIENDLY = 0x70_00ff00
   COLOR_ENEMY = 0x70_ff0000
   COLOR_NEUTRAL = 0x70_ffff00
@@ -26,6 +27,7 @@ class Colony < Gosu::Window
     $window = self
 
     @debug = true
+    @game_state = :starting_menu
 
     # Time variables
     @elapsed_time = 0
@@ -65,10 +67,17 @@ class Colony < Gosu::Window
   def draw
     background_image.draw(0, 0, 0)
 
-    @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
+    if starting_menu?
+      @font.draw('Good day, human', 10, 10, 20)
 
-    @entities.each do |entity|
-      entity.draw
+
+
+    elsif started?
+      @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
+
+      @entities.each do |entity|
+        entity.draw
+      end
     end
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HasFaction
   def self.included(base)
     attr_accessor :faction

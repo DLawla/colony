@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require './lib/modules/has_shape'
-
 class TransferLane
-  include HasShape
-
   attr_accessor :home_planet, :destination_planet
   attr_reader :id
 

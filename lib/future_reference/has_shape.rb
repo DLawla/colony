@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HasShape
   def self.included(base)
   end

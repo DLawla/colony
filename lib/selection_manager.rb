@@ -51,7 +51,7 @@ class SelectionManager
   def planet_and_fleet_selection
     # Manage planet & transfer lane selection/unselection and launching fleets
     if $window.button_down_one_shot? Gosu::MsLeft
-      puts 'button down'
+      puts 'button down' if $window.debug
 
       selected_transfer_lane = TransferLane.selected
 
