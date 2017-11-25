@@ -39,4 +39,10 @@ module HasFaction
   def neutral?
     !friendly? && !enemy?
   end
+
+  def faction_color
+    return Gosu::Color::GREEN if friendly?
+    return Gosu::Color::RED  if enemy?
+    Gosu::Color::YELLOW
+  end
 end

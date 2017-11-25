@@ -8,6 +8,7 @@ class BaseOpponent
 
   def initialize
     assign_faction :enemy
+    @last_action_at = Time.now
   end
 
   def update

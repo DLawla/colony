@@ -7,7 +7,8 @@ include Math
 class Planet
   include HasFaction
 
-  attr_accessor :x, :x_center, :y, :y_center, :selected, :population, :row
+  attr_accessor :selected, :population, :row
+  attr_reader :x, :x_center, :y, :y_center, :row, :max_population
   BASE_IMAGE_SIZE = 300
   BASE_SELECTION_SIZE = 300
   MIN_PLANET_SIZE = 30
@@ -33,8 +34,8 @@ class Planet
 
     if args[:unpopulated] && args[:unpopulated] == true
       @population = 0.0
-    elsif friendly?
-      @population = 500.0
+    elsif friendly? || enemy?
+      @population = 100.0
     else
       @population = 10.0
     end
@@ -115,6 +116,10 @@ class Planet
     other_planet != self && (@row - other_planet.row).abs <= 1
   end
 
+  def transferrable_planets
+    $window.planets.select { |planet| can_transfer_to? planet }
+  end
+
   private
 
   def image
@@ -153,14 +158,7 @@ class Planet
   end
 
   def draw_population
-    if friendly?
-      color = Gosu::Color::GREEN
-    elsif enemy?
-      color = Gosu::Color::RED
-    else
-      color = Gosu::Color::YELLOW
-    end
-    @population_font.draw("#{@population.to_i}", @x, @y, 7, 1, 1, color)
+    @population_font.draw("#{@population.to_i}", @x, @y, 7, 1, 1, faction_color)
   end
 
   def update_status
@@ -178,11 +176,5 @@ class Planet
   def selection_image_offset
     @selection_image_offset ||= ((BASE_IMAGE_SIZE * @image_image_ratio) -
         (BASE_SELECTION_SIZE * @selection_image_ratio)) * 0.5
-  end
-
-  def faction_color
-    return Gosu::Color::GREEN if friendly?
-    return Gosu::Color::RED  if enemy?
-    Gosu::Color::YELLOW
   end
 end

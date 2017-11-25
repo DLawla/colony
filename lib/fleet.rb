@@ -7,6 +7,8 @@ class Fleet
 
   BASE_IMAGE_SIZE = 50
 
+  attr_reader :home_planet, :destination_planet, :population
+
   def initialize(home_planet, destination_planet, population)
     @home_planet = home_planet
     @destination_planet = destination_planet
@@ -32,7 +34,9 @@ class Fleet
                @y + image_offset,
                10,
                1,
-               1)
+               1,
+               faction_color
+    )
   end
 
   private

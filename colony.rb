@@ -115,6 +115,10 @@ class Colony < Gosu::Window
     @entities.select { |e| e.is_a? Planet }
   end
 
+  def fleets
+    @entities.select { |e| e.is_a? Fleet }
+  end
+
   def transfer_lanes
     @entities.select { |e| e.is_a? TransferLane }
   end
