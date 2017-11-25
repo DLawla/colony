@@ -9,7 +9,6 @@ module HasState
   end
 
   def starting_menu!
-    $window.destroy_entities($window.entities)
     @game_state = :starting_menu
     $window.load_starting_menu
   end
@@ -19,7 +18,6 @@ module HasState
   end
 
   def start_game!
-    $window.destroy_entities($window.entities)
     @game_state = :in_game
     $window.load_game_start
   end
@@ -30,7 +28,7 @@ module HasState
 
   def end_game!
     @game_state == :ended
-    $window.load_starting_menu
+    $window.load_end_menu
   end
 
   def game_ended?

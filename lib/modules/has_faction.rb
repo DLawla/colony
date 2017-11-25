@@ -8,6 +8,9 @@ module HasFaction
   end
 
   module ClassMethods
+    def of_faction(faction)
+      $window.entities.select { |has_faction| has_faction.is_a?(self) && has_faction.faction == faction }
+    end
   end
 
   def assign_faction faction

@@ -7,6 +7,7 @@ require './lib/modules/has_state'
 require './lib/planet_factory'
 require './lib/selection_manager'
 require './lib/ui_elements/button'
+require './lib/opponents/v1'
 
 class Colony < Gosu::Window
   include HasState
@@ -44,7 +45,8 @@ class Colony < Gosu::Window
     @lm_previous = false
     @space_previous = false
 
-    starting_menu!
+    #starting_menu!
+    start_game!
   end
 
   def needs_cursor?
@@ -97,7 +99,6 @@ class Colony < Gosu::Window
   end
 
   def oscillating_color(base_color, oscillation_scale = 150)
-    puts base_color.gl
     result = base_color.gl + Math::acos(@elapsed_time%1 ) * oscillation_scale
     result.to_i
   end
@@ -119,6 +120,8 @@ class Colony < Gosu::Window
   end
 
   def load_starting_menu
+    $window.destroy_entities($window.entities)
+
     button = Button.new(10, 100, 'Start') do
       start_game!
     end
@@ -126,6 +129,9 @@ class Colony < Gosu::Window
   end
 
   def load_game_start
+    $window.destroy_entities($window.entities)
+    @background_image = random_background_image
+
     # Time variables
     @elapsed_time = 0
     @delta = 0
@@ -133,14 +139,20 @@ class Colony < Gosu::Window
 
     # Load entities
     PlanetFactory.new
-    $window.add_entities([SelectionManager.new])
+    $window.add_entities([SelectionManager.new, Opponents::V1.new])
+  end
+
+  def load_end_menu
+    button = Button.new(10, 100, 'Restart') do
+      start_game!
+    end
+    $window.add_entities [button]
   end
 
   private
 
   def check_for_game_end
     return unless (all_planets = planets)
-    puts planets.map(&:faction)
     end_game! if planets.select { |planet| planet.faction == planets.first.faction }.count == all_planets.count
   end
 
@@ -158,7 +170,11 @@ class Colony < Gosu::Window
   end
 
   def background_image
-    @background_image ||= Gosu::Image.new("media/backgrounds/background_#{rand(5) + 1}.png")
+    @background_image ||= random_background_image
+  end
+
+  def random_background_image
+    Gosu::Image.new("media/backgrounds/background_#{rand(5) + 1}.png")
   end
 
   def cursor
