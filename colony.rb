@@ -14,6 +14,7 @@ class Colony < Gosu::Window
 
   attr_accessor :entities
   attr_reader :debug, :delta, :elapsed_time
+
   COLOR_FRIENDLY = 0x70_00ff00
   COLOR_ENEMY = 0x70_ff0000
   COLOR_NEUTRAL = 0x70_ffff00
@@ -45,8 +46,7 @@ class Colony < Gosu::Window
     @lm_previous = false
     @space_previous = false
 
-    #starting_menu!
-    start_game!
+    starting_menu!
   end
 
   def needs_cursor?
@@ -74,15 +74,12 @@ class Colony < Gosu::Window
 
     if starting_menu?
       @font.draw('Good day, human', 10, 10, 20)
-      @entities.each do |entity|
-        entity.draw
-      end
     elsif started?
       @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
+    end
 
-      @entities.each do |entity|
-        entity.draw
-      end
+    @entities.each do |entity|
+      entity.draw
     end
   end
 
@@ -125,11 +122,13 @@ class Colony < Gosu::Window
 
   def load_starting_menu
     $window.destroy_entities($window.entities)
-
-    button = Button.new(10, 100, 'Start') do
+    option1 = Button.new(100, 75, 'Start') do
       start_game!
     end
-    $window.add_entities [button]
+    option2 = Button.new(50, 225, 'AI Battle', width: 325) do
+      start_ai_battle!
+    end
+    $window.add_entities [option1, option2]
   end
 
   def load_game_start
@@ -146,8 +145,22 @@ class Colony < Gosu::Window
     $window.add_entities([SelectionManager.new, Opponents::V1.new])
   end
 
+  def load_ai_battle_start
+    $window.destroy_entities($window.entities)
+    @background_image = random_background_image
+
+    # Time variables
+    @elapsed_time = 0
+    @delta = 0
+    @last_time = 0
+
+    # Load entities
+    PlanetFactory.new
+    $window.add_entities([SelectionManager.new, Opponents::V1.new, Opponents::V1.new(:friendly)])
+  end
+
   def load_end_menu
-    button = Button.new(10, 100, 'Restart') do
+    button = Button.new(80, 100, 'Restart', width: 260) do
       start_game!
     end
     $window.add_entities [button]

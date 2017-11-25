@@ -2,7 +2,7 @@
 
 module HasState
   def self.included(base)
-    attr_reader :state
+    attr_reader :game_state
   end
 
   module ClassMethods
@@ -22,12 +22,17 @@ module HasState
     $window.load_game_start
   end
 
+  def start_ai_battle!
+    @game_state = :in_game
+    $window.load_ai_battle_start
+  end
+
   def started?
     @game_state == :in_game
   end
 
   def end_game!
-    @game_state == :ended
+    @game_state = :ended
     $window.load_end_menu
   end
 

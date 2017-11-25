@@ -15,12 +15,12 @@ class FleetTrafficControl
   end
 
   def load_and_send_fleet starting_planet, destination_planet, percentage_leaving
-    percentage_leaving = percentage_leaving.clamp(1, 100)
-    transfering_population = starting_planet.population * (percentage_leaving/100)
-    transfering_population = [starting_planet.population - 10, transfering_population].min
+    percentage_leaving = percentage_leaving.clamp(1, 100).to_f
+    transferring_population = starting_planet.population * (percentage_leaving/100)
+    transferring_population = [starting_planet.population - 10, transferring_population].min
 
-    $window.add_entities([Fleet.new(starting_planet, destination_planet, transfering_population)])
-    starting_planet.population -= transfering_population
+    $window.add_entities([Fleet.new(starting_planet, destination_planet, transferring_population)])
+    starting_planet.population -= transferring_population
     destination_planet.fleet_inbound
   end
 end

@@ -6,8 +6,8 @@ require './lib/fleet_traffic_control'
 class BaseOpponent
   include HasFaction
 
-  def initialize
-    assign_faction :enemy
+  def initialize(faction = :enemy)
+    assign_faction faction
     @last_action_at = Time.now
   end
 

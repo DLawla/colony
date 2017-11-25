@@ -35,10 +35,10 @@ module Opponents
         next if planet.population < population_sweet_spot(planet)
         planet.transferrable_planets.detect do |other_planet|
           if other_planet.faction == faction &&
-              planet.population > population_sweet_spot(planet) &&
+              planet.population > population_sweet_spot(planet) * 1.3 &&
               other_planet.population < population_sweet_spot(other_planet) &&
-              !fleets_on_the_way?(planet, other_planet)
-            FleetTrafficControl.new.send_fleet(planet, other_planet, 20)
+              friendly_inbound_fleets(planet).count <= 2
+            FleetTrafficControl.new.send_fleet(planet, other_planet, 30)
             break
           end
         end
@@ -46,10 +46,17 @@ module Opponents
     end
 
     def attack_adjacent_planets
+      # allow one wreckless attacker player per scan
+      wreckless_attacker = nil
+
       Planet.of_faction(faction).each do |planet|
         planet.transferrable_planets.detect do |other_planet|
           if other_planet.faction != faction && other_planet.population < planet.population
             FleetTrafficControl.new.send_fleet(planet, other_planet, 100)
+            break
+          elsif !wreckless_attacker && near_max_population?(planet) && near_max_population?(other_planet)
+            FleetTrafficControl.new.send_fleet(planet, other_planet, 100)
+            wreckless_attacker = true
             break
           end
         end
@@ -60,10 +67,20 @@ module Opponents
       planet.max_population/2
     end
 
+    def near_max_population?(planet)
+      planet.population >= planet.max_population * 0.95
+    end
+
     def fleets_on_the_way?(starting_planet, destination_planet)
       $window.fleets.select do |fleet|
         fleet.home_planet == starting_planet && fleet.destination_planet == destination_planet
       end.any?
+    end
+
+    def friendly_inbound_fleets(planet)
+      $window.fleets.select do |fleet|
+        fleet.destination_planet == planet && fleet.faction == planet.faction
+      end
     end
   end
 end
