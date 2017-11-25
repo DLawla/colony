@@ -60,9 +60,9 @@ class PlanetFactory
     end
     coordinates
 
-    [{x: (100), y: (100), row: 0},
+    #[{x: (100), y: (100), row: 0},
     #{x: (200), y: (100), row: 0},
     #{x: (100), y: (200), row: 1},
-    {x: (300), y: (100), row: 0}]
+    #{x: (300), y: (100), row: 0}]
   end
 end

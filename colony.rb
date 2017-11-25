@@ -6,6 +6,7 @@ require 'byebug'
 require './lib/modules/has_state'
 require './lib/planet_factory'
 require './lib/selection_manager'
+require './lib/ui_elements/button'
 
 class Colony < Gosu::Window
   include HasState
@@ -27,25 +28,23 @@ class Colony < Gosu::Window
     $window = self
 
     @debug = true
-    @game_state = :starting_menu
+
+    # Images and fonts
+    background_image
+    @font = Gosu::Font.new(self, 'Courier', 40)
 
     # Time variables
     @elapsed_time = 0
     @delta = 0
     @last_time = 0
 
-    # Images and fonts
-    background_image
-    @font = Gosu::Font.new(self, 'Courier', 40)
-
-    # Load entities
     @entities = []
-    PlanetFactory.new
-    add_entities([SelectionManager.new])
 
     # Button one shots
     @lm_previous = false
     @space_previous = false
+
+    starting_menu!
   end
 
   def needs_cursor?
@@ -60,6 +59,10 @@ class Colony < Gosu::Window
       entity.update
     end
 
+    if started?
+      check_for_game_end
+    end
+
     update_previous_button_downs
   end
 
@@ -69,9 +72,9 @@ class Colony < Gosu::Window
 
     if starting_menu?
       @font.draw('Good day, human', 10, 10, 20)
-
-
-
+      @entities.each do |entity|
+        entity.draw
+      end
     elsif started?
       @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
 
@@ -115,7 +118,31 @@ class Colony < Gosu::Window
     @entities.select { |e| e.is_a? TransferLane }
   end
 
+  def load_starting_menu
+    button = Button.new(10, 100, 'Start') do
+      start_game!
+    end
+    $window.add_entities [button]
+  end
+
+  def load_game_start
+    # Time variables
+    @elapsed_time = 0
+    @delta = 0
+    @last_time = 0
+
+    # Load entities
+    PlanetFactory.new
+    $window.add_entities([SelectionManager.new])
+  end
+
   private
+
+  def check_for_game_end
+    return unless (all_planets = planets)
+    puts planets.map(&:faction)
+    end_game! if planets.select { |planet| planet.faction == planets.first.faction }.count == all_planets.count
+  end
 
   def update_times
     current_time = Gosu::milliseconds / 1000.0
