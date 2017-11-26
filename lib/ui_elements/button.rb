@@ -11,7 +11,7 @@ class Button
 
     @width = args[:width] ||= 200
     @height = args[:height] ||= 100
-    @z = args[:z] ||= 1
+    @z = args[:z] ||= 2
     @image = args[:image]
     @font = Gosu::Font.new($window, 'Courier', 40)
     @opacity = args[:opacity] || 200
@@ -27,12 +27,21 @@ class Button
     if @image
       @image.draw(@x, @y, @z)
     end
+
     @font.draw(@text, @x + @width/4, @y + @height/4, @z + 1)
+
     $window.draw_quad(@x, @y, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
                       @x + @width, @y, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
                       @x + @width, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
                       @x, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
                       @z)
+
+    if mouse_within?
+      $window.draw_line(@x, @y, Gosu::Color::WHITE, @x + @width, @y, Gosu::Color::WHITE, @z)
+      $window.draw_line(@x + @width, @y, Gosu::Color::WHITE, @x + @width, @y + @height, Gosu::Color::WHITE, @z)
+      $window.draw_line(@x + @width, @y + @height, Gosu::Color::WHITE, @x, @y + @height, Gosu::Color::WHITE, @z)
+      $window.draw_line(@x, @y + @height, Gosu::Color::WHITE, @x, @y, Gosu::Color::WHITE, @z)
+    end
   end
 
   private

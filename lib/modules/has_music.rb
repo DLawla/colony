@@ -25,8 +25,6 @@ module HasMusic
       end
     end
 
-    $window.play_music
-
     next_song_image = Gosu::Image.new("media/next_song.gif")
     next_song = Button.new(@width - 18, 0, '', image: next_song_image, width: 18, height: 18, opacity: 50) do |button|
       $window.next_song
@@ -53,6 +51,7 @@ module HasMusic
     $window.music.stop
     $window.current_song_index = ($window.current_song_index + 1) % $window.songs.size
     $window.music = $window.songs[$window.current_song_index]
-    $window.play_music
+
+    $window.play_music unless $window.starting_menu?
   end
 end

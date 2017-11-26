@@ -92,6 +92,16 @@ class Colony < Gosu::Window
       @font.draw("#{@elapsed_time.to_i}", 10, @height - 30, 2, 0.5, 0.5)
     end
 
+    if game_ended?
+      if planets.first.human_faction?
+        @font.draw('Good work, human', 10, 10, 20)
+      else
+        @font.draw('Good work, fellow', 10, 10, 20)
+        @font.draw('non-human.', 10, 10, 20)
+      end
+
+    end
+
     @entities.each do |entity|
       entity.draw
     end
@@ -161,7 +171,9 @@ class Colony < Gosu::Window
     $window.destroy_entities($window.entities)
     option1 = Button.new(100, 75, 'Start') do
       start_game!
+      $window.play_music
     end
+
     option2 = Button.new(50, 225, 'AI Battle', width: 325) do
       start_ai_battle!
     end
@@ -199,7 +211,7 @@ class Colony < Gosu::Window
   end
 
   def load_end_menu
-    button = Button.new(80, 50, 'Restart', width: 260) do
+    button = Button.new(80, 200, 'Restart', width: 260) do
       start_game!
     end
     $window.add_entities [button]
