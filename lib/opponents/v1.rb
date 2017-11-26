@@ -20,12 +20,12 @@ module Opponents
     #   adjacent enemy, transfer to it
 
     def update
-      if @last_action_at < Time.now - 1
-        reinforce_friendly_planets
-        attack_adjacent_planets
+      #if @last_action_at < Time.now - 1
+      reinforce_friendly_planets
+      attack_adjacent_planets
 
-        @last_action_at = Time.now
-      end
+      @last_action_at = Time.now
+      #end
     end
 
     private
@@ -33,12 +33,12 @@ module Opponents
     def reinforce_friendly_planets
       Planet.of_faction(faction).each do |planet|
         next if planet.population < population_sweet_spot(planet)
-        planet.transferrable_planets.detect do |other_planet|
+        planet.transferrable_planets.each do |other_planet|
           if other_planet.faction == faction &&
               planet.population > population_sweet_spot(planet) * 1.3 &&
               other_planet.population < population_sweet_spot(other_planet) &&
-              friendly_inbound_fleets(planet).count <= 2
-            FleetTrafficControl.new.send_fleet(planet, other_planet, 30)
+              friendly_inbound_fleets(other_planet).count <= 1
+            FleetTrafficControl.new.send_fleet(planet, other_planet, 20)
             break
           end
         end
@@ -51,10 +51,15 @@ module Opponents
 
       Planet.of_faction(faction).each do |planet|
         planet.transferrable_planets.detect do |other_planet|
-          if other_planet.faction != faction && other_planet.population < planet.population
+          if other_planet.faction != faction &&
+              planet.population > population_sweet_spot(planet) * 0.25 &&
+              other_planet.population < planet.population
             FleetTrafficControl.new.send_fleet(planet, other_planet, 100)
             break
-          elsif !wreckless_attacker && near_max_population?(planet) && near_max_population?(other_planet)
+          elsif other_planet.faction != faction &&
+              !wreckless_attacker &&
+              near_max_population?(planet) &&
+              near_max_population?(other_planet)
             FleetTrafficControl.new.send_fleet(planet, other_planet, 100)
             wreckless_attacker = true
             break

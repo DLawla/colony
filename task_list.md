@@ -18,12 +18,8 @@
 - [DONE] Percentage transfer on transfer lanes
 ####TODO
 
-- [] Refactor transfer lanes to not use body's and shapes, a bit too much overkill
-- [] If two transfer lanes are hovered-over, make space bar switch between them
-- [] Refactor ZIndices into a module (one was added)
 - [] If a planet is selected, clicking it should toggle click on/off
 - [] If a planet is selected, clicking a non-transferrable, friendly planet should change selection to that planet
-- [] Make faction-owned planet grow in population faster and start with a boosted population
 - [] Create an indicator of some sort for population relative to max (maybe a circumference line)
         - Could maybe do this with simple triangles? Would look better with arcs or solid circle
 - [] Change fleet animation size depending on population size

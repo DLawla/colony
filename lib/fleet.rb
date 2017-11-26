@@ -33,8 +33,8 @@ class Fleet
     image.draw(@x + image_offset,
                @y + image_offset,
                10,
-               1,
-               1,
+               image_ratio,
+               image_ratio,
                faction_color
     )
   end
@@ -74,7 +74,7 @@ class Fleet
   end
 
   def image_offset
-    @image_offset ||= -BASE_IMAGE_SIZE/2
+    @image_offset ||= -(BASE_IMAGE_SIZE * image_ratio)/2
   end
 
   def disembark_population
@@ -95,5 +95,13 @@ class Fleet
       @destination_planet.change_faction_to faction
       @destination_planet.population = @population - @destination_planet.population
     end
+  end
+
+  def image_ratio
+    max_population_size = 7000.0
+    min_ratio = 0.2
+
+    return 1 if population > max_population_size
+    [(population/max_population_size), min_ratio].max
   end
 end

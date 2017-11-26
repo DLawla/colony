@@ -3,7 +3,7 @@
 require './lib/fleet'
 
 class Button
-  attr_accessor :x, :y, :text
+  attr_accessor :x, :y, :z, :text
 
   def initialize x, y, text, args = {}, &block
     @x, @y, @text = x, y, text
@@ -11,6 +11,7 @@ class Button
 
     @width = args[:width] ||= 200
     @height = args[:height] ||= 100
+    @z = args[:z] ||= 1
     @font = Gosu::Font.new($window, 'Courier', 40)
   end
 
@@ -21,12 +22,12 @@ class Button
   end
 
   def draw
-    $window.draw_quad(@x, @y, Gosu::Color::BLACK,
-                      @x + @width, @y, Gosu::Color::BLACK,
-                      @x + @width, @y + @height, Gosu::Color::BLACK,
-                      @x, @y + @height, Gosu::Color::BLACK,
-                      1)
-    @font.draw(@text, @x + @width/4, @y + @height/4, 20)
+    @font.draw(@text, @x + @width/4, @y + @height/4, @z +1)
+    $window.draw_quad(@x, @y, $window.color_with_opactity(Gosu::Color::BLACK, 200),
+                      @x + @width, @y, $window.color_with_opactity(Gosu::Color::BLACK, 200),
+                      @x + @width, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, 200),
+                      @x, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, 200),
+                      @z)
   end
 
   private

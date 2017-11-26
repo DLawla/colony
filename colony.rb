@@ -13,7 +13,7 @@ class Colony < Gosu::Window
   include HasState
 
   attr_accessor :entities
-  attr_reader :debug, :delta, :elapsed_time
+  attr_reader :debug, :delta, :elapsed_time, :height, :width
 
   COLOR_FRIENDLY = 0x70_00ff00
   COLOR_ENEMY = 0x70_ff0000
@@ -21,7 +21,9 @@ class Colony < Gosu::Window
   COLOR_TRANSPARENT = 0x00_808080
 
   def initialize
-    super(450, 700, false)
+    @height = 700
+    @width = 450
+    super(@width, @height, false)
     self.caption = 'Colony'
 
     # Yes, it's a global. But it is a justifying use-case. Otherwise, would need to be passed
@@ -55,14 +57,13 @@ class Colony < Gosu::Window
 
   # Called by Gosu
   def update
-    update_times
-
     @entities.each do |entity|
       entity.update
     end
 
     if started?
       check_for_game_end
+      update_times
     end
 
     update_previous_button_downs
@@ -74,8 +75,8 @@ class Colony < Gosu::Window
 
     if starting_menu?
       @font.draw('Good day, human', 10, 10, 20)
-    elsif started?
-      @font.draw("#{@elapsed_time.to_i}", 10, 10, 20)
+    elsif started? || game_ended?
+      @font.draw("#{@elapsed_time.to_i}", 10, @height - 30, 2, 0.5, 0.5)
     end
 
     @entities.each do |entity|
@@ -98,6 +99,13 @@ class Colony < Gosu::Window
   def oscillating_color(base_color, oscillation_scale = 150)
     result = base_color.gl + Math::acos(@elapsed_time%1 ) * oscillation_scale
     result.to_i
+  end
+
+  def color_with_opactity(color, opacity)
+    opacity.clamp(1, 255)
+    color = color.dup
+    color.send(:alpha=, opacity)
+    color
   end
 
   def add_entities(entities_array)
@@ -160,7 +168,7 @@ class Colony < Gosu::Window
   end
 
   def load_end_menu
-    button = Button.new(80, 100, 'Restart', width: 260) do
+    button = Button.new(80, 50, 'Restart', width: 260) do
       start_game!
     end
     $window.add_entities [button]

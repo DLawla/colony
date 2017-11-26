@@ -159,6 +159,20 @@ class Planet
 
   def draw_population
     @population_font.draw("#{@population.to_i}", @x, @y, 7, 1, 1, faction_color)
+
+    # draw triangles for 1/16ths of max population
+    number_of_ticks = 32
+    degree_step = 360/number_of_ticks
+    radius = @size.to_f/2
+    number_of_ticks.times do |i|
+      Gosu.rotate(180 + degree_step/2 + i * degree_step, x_center, y_center) do
+        $window.draw_triangle(x_center, y_center, $window.color_with_opactity(faction_color, 80),
+                            x_center - 3, y_center + radius, $window.color_with_opactity(faction_color, 80),
+                            x_center + 3, y_center + radius, $window.color_with_opactity(faction_color, 80),
+                            1)
+      end
+      break if population < max_population * (i+1)/number_of_ticks
+    end
   end
 
   def update_status
