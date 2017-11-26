@@ -98,7 +98,7 @@ class Planet
   end
 
   def fleet_inbound_from(planet)
-    start_animation
+    start_animation if planet.human_faction?
   end
 
   def start_animation

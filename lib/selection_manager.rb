@@ -66,7 +66,7 @@ class SelectionManager
           remove_planet_selection
         end
       else
-        if planet_moused_over && planet_moused_over.human?
+        if planet_moused_over && planet_moused_over.human_faction?
           add_planet_selection planet_moused_over
         else
           remove_planet_selection

@@ -25,9 +25,11 @@ module HasFaction
     @faction
   end
 
-  def human?
-    @faction == 0
+  def human_faction?
+    @faction == $window.class::HUMAN_FACTION
   end
+
+
 
   # def friendly?
   #   @faction == :friendly
