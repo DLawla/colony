@@ -6,7 +6,7 @@ require './lib/fleet_traffic_control'
 class BaseContender
   include HasFaction
 
-  def initialize(faction = faction)
+  def initialize(faction:)
     assign_faction faction
     @last_action_at = Time.now
   end
@@ -21,5 +21,9 @@ class BaseContender
 
   def human?
     false
+  end
+
+  def artificial_intelligence?
+    !human?
   end
 end

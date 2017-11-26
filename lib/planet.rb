@@ -34,7 +34,7 @@ class Planet
 
     if args[:unpopulated] && args[:unpopulated] == true
       @population = 0.0
-    elsif friendly? || enemy?
+    elsif has_faction?
       @population = 100.0
     else
       @population = 10.0
@@ -53,7 +53,6 @@ class Planet
   end
 
   def update
-    remove_hovered_over
     update_status
     update_population
   end
@@ -62,6 +61,8 @@ class Planet
     image.draw(@x, @y, 5, @image_image_ratio, @image_image_ratio)
     draw_selection_image
     draw_population
+
+    remove_hovered_over
   end
 
   def within?(x, y)

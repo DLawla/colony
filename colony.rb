@@ -22,6 +22,7 @@ class Colony < Gosu::Window
   COLOR_ENEMY = 0x70_ff0000
   COLOR_NEUTRAL = 0x70_ffff00
   COLOR_TRANSPARENT = 0x00_808080
+  HUMAN_FACTION = 0
 
   def initialize
     @height = 700
@@ -177,7 +178,9 @@ class Colony < Gosu::Window
     @last_time = 0
 
     # Load entities
-    $window.add_entities([SelectionManager.new, Opponents::Human.new(faction: 0), Opponents::V1.new(faction: 1)])
+    $window.add_entities([SelectionManager.new,
+                          Opponents::Human.new(faction: HUMAN_FACTION),
+                          Opponents::V1.new(faction: 1)])
     PlanetFactory.new
   end
 
@@ -191,7 +194,7 @@ class Colony < Gosu::Window
     @last_time = 0
 
     # Load entities
-    $window.add_entities([SelectionManager.new, Opponents::V1.new(faction: 0), Opponents::V1.new(faction: 1)])
+    $window.add_entities([SelectionManager.new, Opponents::V1.new(faction: 1), Opponents::V1.new(faction: 2)])
     PlanetFactory.new
   end
 
@@ -207,6 +210,7 @@ class Colony < Gosu::Window
   def check_for_game_end
     return unless (all_planets = planets)
     end_game! if planets.select { |planet| planet.faction == planets.first.faction }.count == all_planets.count
+    end_game! if planets.select { |planet| planet.faction.nil? }.count == all_planets.count
   end
 
   def update_times

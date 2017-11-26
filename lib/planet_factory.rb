@@ -14,15 +14,16 @@ class PlanetFactory
     coordinates = generate_planet_coordinates
     coordinates.each_with_index.map do |coordinate, i|
       faction = if i.zero?
-                  $window.contenders[0].faction
+                  $window.contenders.detect(&:artificial_intelligence?).faction
                 elsif i == coordinates.length - 1
-                  $window.contenders[1].faction
+                  $window.class::HUMAN_FACTION
                 end
       Planet.new(x_center: coordinate[:x],
                  y_center: coordinate[:y],
                  row: coordinate[:row],
                  faction: faction,
                  random: faction.nil?)
+
     end
   end
 

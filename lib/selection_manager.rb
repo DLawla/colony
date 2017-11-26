@@ -42,7 +42,7 @@ class SelectionManager
         planet_moused_over.hovered_over
       end
     else
-      if planet_moused_over && planet_moused_over.friendly?
+      if planet_moused_over && planet_moused_over.faction == $window.class::HUMAN_FACTION
         planet_moused_over.hovered_over
       end
     end
@@ -66,7 +66,7 @@ class SelectionManager
           remove_planet_selection
         end
       else
-        if planet_moused_over && planet_moused_over.friendly?
+        if planet_moused_over && planet_moused_over.human?
           add_planet_selection planet_moused_over
         else
           remove_planet_selection

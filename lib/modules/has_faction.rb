@@ -2,7 +2,7 @@
 
 module HasFaction
   def self.included(base)
-    attr_accessor :faction, :human
+    attr_accessor :faction
 
     base.extend(ClassMethods)
   end
@@ -13,37 +13,38 @@ module HasFaction
     end
   end
 
-  def assign_faction faction, human = false
-    @human = human
-    @faction = case faction
-                 when 1
-                   :friendly
-                 when 2
-                   :enemy
-                 else
-                   :neutral
-               end
+  def assign_faction faction
+    @faction = faction
   end
 
   def change_faction_to new_faction
     @faction = new_faction
   end
 
-  def friendly?
-    @faction == :friendly
+  def has_faction?
+    @faction
   end
 
-  def enemy?
-    @faction == :enemy
+  def human?
+    @faction == 0
   end
 
-  def neutral?
-    !friendly? && !enemy?
-  end
+  # def friendly?
+  #   @faction == :friendly
+  # end
+  #
+  # def enemy?
+  #   @faction == :enemy
+  # end
+  #
+  # def neutral?
+  #   !friendly? && !enemy?
+  # end
 
   def faction_color
-    return Gosu::Color::GREEN if friendly?
-    return Gosu::Color::RED  if enemy?
+    return Gosu::Color::GREEN if @faction == 0
+    return Gosu::Color::RED  if @faction == 1
+    return Gosu::Color::BLUE  if @faction == 2
     Gosu::Color::YELLOW
   end
 end
