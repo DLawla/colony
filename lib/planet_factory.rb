@@ -14,9 +14,9 @@ class PlanetFactory
     coordinates = generate_planet_coordinates
     coordinates.each_with_index.map do |coordinate, i|
       faction = if i.zero?
-                  $window.contenders.detect(&:artificial_intelligence?).faction
+                  $window.contenders[0].faction
                 elsif i == coordinates.length - 1
-                  $window.class::HUMAN_FACTION
+                  $window.contenders[1].faction
                 end
       Planet.new(x_center: coordinate[:x],
                  y_center: coordinate[:y],

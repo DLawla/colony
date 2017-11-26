@@ -97,7 +97,7 @@ class Colony < Gosu::Window
         @font.draw('Good work, human', 10, 10, 20)
       else
         @font.draw('Good work, fellow', 10, 10, 20)
-        @font.draw('non-human.', 10, 10, 20)
+        @font.draw('non-human.', 10, 40, 20)
       end
 
     end
@@ -191,8 +191,8 @@ class Colony < Gosu::Window
 
     # Load entities
     $window.add_entities([SelectionManager.new,
-                          Opponents::Human.new(faction: HUMAN_FACTION),
-                          Opponents::V1.new(faction: 1)])
+                          Opponents::V1.new(faction: 1),
+                          Opponents::Human.new(faction: HUMAN_FACTION)])
     PlanetFactory.new
   end
 
@@ -206,7 +206,9 @@ class Colony < Gosu::Window
     @last_time = 0
 
     # Load entities
-    $window.add_entities([SelectionManager.new, Opponents::V1.new(faction: 1), Opponents::V1.new(faction: 2)])
+    $window.add_entities([SelectionManager.new,
+                          Opponents::V1.new(faction: 1),
+                          Opponents::V1.new(faction: 2)])
     PlanetFactory.new
   end
 

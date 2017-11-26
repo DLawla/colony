@@ -29,20 +29,6 @@ module HasFaction
     @faction == $window.class::HUMAN_FACTION
   end
 
-
-
-  # def friendly?
-  #   @faction == :friendly
-  # end
-  #
-  # def enemy?
-  #   @faction == :enemy
-  # end
-  #
-  # def neutral?
-  #   !friendly? && !enemy?
-  # end
-
   def faction_color
     return Gosu::Color::GREEN if @faction == 0
     return Gosu::Color::RED  if @faction == 1
