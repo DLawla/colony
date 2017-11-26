@@ -116,6 +116,9 @@ class Planet
   end
 
   def can_transfer_to?(other_planet)
+    # Fix: make it able to transfer always to the closest possible planet
+    # Can also transfer to anything less than a constant distance
+
     transferrable_distance = 250
     return false if other_planet == self
     return true if self.sector == other_planet.sector &&

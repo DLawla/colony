@@ -236,7 +236,7 @@ class Colony < Gosu::Window
   end
 
   def load_end_menu
-    button = Button.new(80, 200, 'Restart', width: 260) do
+    button = Button.new(80, 200, 'Menu', width: 260) do
       starting_menu!
     end
     $window.add_entities [button]
