@@ -7,8 +7,8 @@ include Math
 class Planet
   include HasFaction
 
-  attr_accessor :selected, :population, :row
-  attr_reader :x, :x_center, :y, :y_center, :row, :max_population
+  attr_accessor :selected, :population
+  attr_reader :x, :x_center, :y, :y_center, :row, :sector, :cell, :max_population
   BASE_IMAGE_SIZE = 300
   BASE_SELECTION_SIZE = 300
   MIN_PLANET_SIZE = 30
@@ -29,6 +29,8 @@ class Planet
     @y_center = args[:y_center]
     @y = y_center - @size/2
     @row = args[:row]
+    @cell = args[:cell]
+    @sector = args[:sector]
 
     assign_faction args[:faction]
 
@@ -114,7 +116,13 @@ class Planet
   end
 
   def can_transfer_to?(other_planet)
-    other_planet != self && (@row - other_planet.row).abs <= 1
+    transferrable_distance = 250
+    return false if other_planet == self
+    return true if self.sector == other_planet.sector &&
+        self.row == other_planet.row &&
+        (self.cell - other_planet.cell).abs <= 1
+
+    Gosu::distance(self.x_center, self.y_center, other_planet.x_center, other_planet.y_center) < transferrable_distance
   end
 
   def transferrable_planets

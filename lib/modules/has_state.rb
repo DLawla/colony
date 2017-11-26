@@ -29,6 +29,11 @@ module HasState
     $window.load_ai_battle_start
   end
 
+  def start_large_ai_battle!
+    @game_state = :in_game
+    $window.load_large_ai_battle_start
+  end
+
   def started?
     @game_state == :in_game
   end

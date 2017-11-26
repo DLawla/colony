@@ -33,6 +33,8 @@ module HasFaction
     return Gosu::Color::GREEN if @faction == 0
     return Gosu::Color::RED  if @faction == 1
     return Gosu::Color::BLUE  if @faction == 2
+    return Gosu::Color::WHITE  if @faction == 3
+    return Gosu::Color::CYAN  if @faction == 4
     Gosu::Color::YELLOW
   end
 end

@@ -26,7 +26,7 @@ class Colony < Gosu::Window
 
   def initialize
     @height = 700
-    @width = 450
+    @width = 700#450
     super(@width, @height, false)
     self.caption = 'Colony'
 
@@ -169,7 +169,7 @@ class Colony < Gosu::Window
 
   def load_starting_menu
     $window.destroy_entities($window.entities)
-    option1 = Button.new(100, 75, 'Start') do
+    option1 = Button.new(50, 75, 'Start') do
       start_game!
       $window.play_music
     end
@@ -177,7 +177,12 @@ class Colony < Gosu::Window
     option2 = Button.new(50, 225, 'AI Battle', width: 325) do
       start_ai_battle!
     end
-    $window.add_entities [option1, option2]
+
+    option3 = Button.new(50, 375, 'Large AI Battle', width: 450) do
+      start_large_ai_battle!
+    end
+
+    $window.add_entities [option1, option2, option3]
   end
 
   def load_game_start
@@ -212,9 +217,27 @@ class Colony < Gosu::Window
     PlanetFactory.new
   end
 
+  def load_large_ai_battle_start
+    $window.destroy_entities($window.entities)
+    @background_image = random_background_image
+
+    # Time variables
+    @elapsed_time = 0
+    @delta = 0
+    @last_time = 0
+
+    # Load entities
+    $window.add_entities([SelectionManager.new,
+                          Opponents::V1.new(faction: 1),
+                          Opponents::V1.new(faction: 2),
+                          Opponents::V1.new(faction: 3),
+                          Opponents::V1.new(faction: 4)])
+    PlanetFactory.new
+  end
+
   def load_end_menu
     button = Button.new(80, 200, 'Restart', width: 260) do
-      start_game!
+      starting_menu!
     end
     $window.add_entities [button]
   end
