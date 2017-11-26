@@ -3,16 +3,19 @@
 require 'gosu'
 require 'byebug'
 
+require './lib/modules/has_music'
 require './lib/modules/has_state'
 require './lib/planet_factory'
 require './lib/selection_manager'
 require './lib/ui_elements/button'
-require './lib/opponents/v1'
+require './lib/contenders/human'
+require './lib/contenders/v1'
 
 class Colony < Gosu::Window
+  include HasMusic
   include HasState
 
-  attr_accessor :entities
+  attr_accessor :entities, :menu_controls
   attr_reader :debug, :delta, :elapsed_time, :height, :width
 
   COLOR_FRIENDLY = 0x70_00ff00
@@ -43,10 +46,14 @@ class Colony < Gosu::Window
     @last_time = 0
 
     @entities = []
+    @menu_controls = []
 
     # Button one shots
     @lm_previous = false
     @space_previous = false
+
+    # Music
+    load_music
 
     starting_menu!
   end
@@ -61,11 +68,16 @@ class Colony < Gosu::Window
       entity.update
     end
 
+    @menu_controls.each do |control|
+      control.update
+    end
+
     if started?
       check_for_game_end
       update_times
     end
 
+    loop_through_songs
     update_previous_button_downs
   end
 
@@ -81,6 +93,10 @@ class Colony < Gosu::Window
 
     @entities.each do |entity|
       entity.draw
+    end
+
+    @menu_controls.each do |control|
+      control.draw
     end
   end
 
@@ -116,12 +132,24 @@ class Colony < Gosu::Window
     @entities -= entities_array
   end
 
+  def add_menu_controls(controls_array)
+    @menu_controls += controls_array
+  end
+
+  def destroy_menu_controls(controls_array)
+    @menu_controls -= controls_array
+  end
+
   def planets
     @entities.select { |e| e.is_a? Planet }
   end
 
   def fleets
     @entities.select { |e| e.is_a? Fleet }
+  end
+
+  def contenders
+    @entities.select { |e| e.class < BaseContender }
   end
 
   def transfer_lanes
@@ -149,8 +177,8 @@ class Colony < Gosu::Window
     @last_time = 0
 
     # Load entities
+    $window.add_entities([SelectionManager.new, Opponents::Human.new(faction: 0), Opponents::V1.new(faction: 1)])
     PlanetFactory.new
-    $window.add_entities([SelectionManager.new, Opponents::V1.new])
   end
 
   def load_ai_battle_start
@@ -163,8 +191,8 @@ class Colony < Gosu::Window
     @last_time = 0
 
     # Load entities
+    $window.add_entities([SelectionManager.new, Opponents::V1.new(faction: 0), Opponents::V1.new(faction: 1)])
     PlanetFactory.new
-    $window.add_entities([SelectionManager.new, Opponents::V1.new, Opponents::V1.new(:friendly)])
   end
 
   def load_end_menu

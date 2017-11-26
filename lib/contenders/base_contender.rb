@@ -3,10 +3,10 @@
 require './lib/modules/has_faction'
 require './lib/fleet_traffic_control'
 
-class BaseOpponent
+class BaseContender
   include HasFaction
 
-  def initialize(faction = :enemy)
+  def initialize(faction = faction)
     assign_faction faction
     @last_action_at = Time.now
   end
@@ -17,5 +17,9 @@ class BaseOpponent
 
   def draw
     # Nothing should be placed here
+  end
+
+  def human?
+    false
   end
 end

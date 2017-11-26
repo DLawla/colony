@@ -96,7 +96,7 @@ class Planet
     start_animation
   end
 
-  def fleet_inbound
+  def fleet_inbound_from(planet)
     start_animation
   end
 

@@ -14,21 +14,16 @@ class PlanetFactory
     coordinates = generate_planet_coordinates
     coordinates.each_with_index.map do |coordinate, i|
       faction = if i.zero?
-                  :enemy
+                  $window.contenders[0].faction
                 elsif i == coordinates.length - 1
-                  :friendly
+                  $window.contenders[1].faction
                 end
       Planet.new(x_center: coordinate[:x],
                  y_center: coordinate[:y],
                  row: coordinate[:row],
                  faction: faction,
-                 random: !faction,
-                 unpopulated: unpopulated?(faction))
+                 random: faction.nil?)
     end
-  end
-
-  def unpopulated?(faction)
-    !faction && rand(0..1)
   end
 
   def generate_planet_coordinates
@@ -59,9 +54,5 @@ class PlanetFactory
     end
     coordinates
 
-    #[{x: (100), y: (100), row: 0},
-    # {x: (200), y: (100), row: 0},
-    # {x: (100), y: (200), row: 1},
-    #{x: (300), y: (100), row: 0}]
   end
 end

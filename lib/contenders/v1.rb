@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require './lib/opponents/base_opponent'
+require './lib/contenders/base_contender'
 
 module Opponents
-  class V1 < BaseOpponent
+  class V1 < BaseContender
     # Inputs
     # All planets: $window.planets => array of planets
     # All of my planets: Planet.of_faction(faction)

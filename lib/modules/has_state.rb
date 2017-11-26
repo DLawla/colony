@@ -3,6 +3,8 @@
 module HasState
   def self.included(base)
     attr_reader :game_state
+
+    base.extend(ClassMethods)
   end
 
   module ClassMethods

@@ -3,7 +3,7 @@
 require './lib/fleet'
 
 class Button
-  attr_accessor :x, :y, :z, :text
+  attr_accessor :x, :y, :z, :text, :image, :opacity
 
   def initialize x, y, text, args = {}, &block
     @x, @y, @text = x, y, text
@@ -12,21 +12,26 @@ class Button
     @width = args[:width] ||= 200
     @height = args[:height] ||= 100
     @z = args[:z] ||= 1
+    @image = args[:image]
     @font = Gosu::Font.new($window, 'Courier', 40)
+    @opacity = args[:opacity] || 200
   end
 
   def update
     if $window.button_down_one_shot? Gosu::MsLeft
-      @post_click_block.call if mouse_within?
+      @post_click_block.call(self) if mouse_within?
     end
   end
 
   def draw
-    @font.draw(@text, @x + @width/4, @y + @height/4, @z +1)
-    $window.draw_quad(@x, @y, $window.color_with_opactity(Gosu::Color::BLACK, 200),
-                      @x + @width, @y, $window.color_with_opactity(Gosu::Color::BLACK, 200),
-                      @x + @width, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, 200),
-                      @x, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, 200),
+    if @image
+      @image.draw(@x, @y, @z)
+    end
+    @font.draw(@text, @x + @width/4, @y + @height/4, @z + 1)
+    $window.draw_quad(@x, @y, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
+                      @x + @width, @y, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
+                      @x + @width, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
+                      @x, @y + @height, $window.color_with_opactity(Gosu::Color::BLACK, opacity),
                       @z)
   end
 

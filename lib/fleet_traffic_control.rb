@@ -21,6 +21,6 @@ class FleetTrafficControl
 
     $window.add_entities([Fleet.new(starting_planet, destination_planet, transferring_population)])
     starting_planet.population -= transferring_population
-    destination_planet.fleet_inbound
+    destination_planet.fleet_inbound_from(starting_planet)
   end
 end

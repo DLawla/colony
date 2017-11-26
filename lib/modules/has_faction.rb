@@ -2,7 +2,7 @@
 
 module HasFaction
   def self.included(base)
-    attr_accessor :faction
+    attr_accessor :faction, :human
 
     base.extend(ClassMethods)
   end
@@ -13,11 +13,12 @@ module HasFaction
     end
   end
 
-  def assign_faction faction
+  def assign_faction faction, human = false
+    @human = human
     @faction = case faction
-                 when :friendly
+                 when 1
                    :friendly
-                 when :enemy
+                 when 2
                    :enemy
                  else
                    :neutral
