@@ -93,13 +93,12 @@ class Colony < Gosu::Window
     end
 
     if game_ended?
-      if planets.first.human_faction?
+      if planets.any? && planets.first.human_faction?
         @font.draw('Good work, human', 10, 10, 20)
       else
         @font.draw('Good work, fellow', 10, 10, 20)
         @font.draw('non-human.', 10, 40, 20)
       end
-
     end
 
     @entities.each do |entity|

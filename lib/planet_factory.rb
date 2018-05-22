@@ -37,7 +37,7 @@ class PlanetFactory
 
   def generate_planet_coordinates(high_density = false)
     return high_density_coordinates if high_density
-    low_density_coordinates(0, 0, $window.width, $window.height)
+    low_density_coordinates($window.width * 0.25, 0, $window.width * 0.75, $window.height)
   end
 
   def low_density_coordinates(x_1, y_1, x_2, y_2, sector = 0)
