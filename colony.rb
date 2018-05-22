@@ -31,7 +31,7 @@ class Colony < Gosu::Window
     self.caption = 'Colony'
 
     # Yes, it's a global. But it is a justifying use-case. Otherwise, would need to be passed
-    # around to every class initialization, which means it is basically a global already. Therefor,
+    # around to every class initialization, which means it is basically a global already. Therefore,
     # calling it as a global to simplify.
     $window = self
 
