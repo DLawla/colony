@@ -20,12 +20,10 @@ module Opponents
     #   adjacent enemy, transfer to it
 
     def update
-      #if @last_action_at < Time.now - 1
       reinforce_friendly_planets
       attack_adjacent_planets
 
       @last_action_at = Time.now
-      #end
     end
 
     private
